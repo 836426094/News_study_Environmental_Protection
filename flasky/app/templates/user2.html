@@ -1,0 +1,58 @@
+
+{% extends "base.html" %}
+
+{% block title %}User{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    {% block page_content %}
+    <div class="page-header">
+
+        <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
+        <div class="profile-header">
+            <h1>{{ user.username }}</h1>
+
+            {% if user.name or user.location %}
+            <p>
+                {% if user.name %}{{ user.name }}{% endif %}
+                {% if user.location %}
+
+                    From <a href="http://map.baidu.com/?newmap=1&l=12&tn=B_NORMAL_MAP&s=con%26from%3Dalamap%26tpl%3Dmapcity%26wd%3D{{ user.location }}%26c%3D261">
+                        {{ user.location }}
+                    </a>
+                {% endif %}
+            </p>
+            {% endif %}
+
+            <!--检查是否是管理员-->
+            {% if current_user.is_administrator() or current_user.is_MODERATE_COMMENTS %}
+            <p>邮箱：<a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+            {%else%}
+            <p>邮箱：********   <a href="#">点击开通会员查看邮箱</a></p>
+            {% endif %}
+            <!--检查是否是管理员结束-->
+            {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+            <p>
+                Member since {{ moment(user.member_since).format('L') }}.
+                Last seen {{ moment(user.last_seen).fromNow() }}.
+            </p>
+            {% if user == current_user %}
+            <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">
+            Edit Profile
+            </a>
+            {% endif %}
+
+            {% if current_user.is_administrator() %}
+            <a class="btn btn-danger"
+            href="{{ url_for('.edit_profile_admin', id=user.id) }}">
+            Edit Profile [Admin]
+            </a>
+            {% endif %}
+            </div>
+    </div>
+    {% endblock %}
+
+</div>
+{% endblock %}

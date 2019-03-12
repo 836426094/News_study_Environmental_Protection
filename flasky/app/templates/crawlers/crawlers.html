@@ -1,0 +1,244 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}ip{% endblock %}
+
+ {% block scripts %}
+        {{ super() }}
+        {{ pagedown.include_pagedown() }}
+
+
+
+ {% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <div class="page-header">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="http://api.map.baidu.com/api?key=46ce9d0614bf7aefe0ba562f8cf87194&v=1.0&services=false"></script>
+
+        <h2>百度地图</h2>
+        <!--创建地图容器元素-->
+        <div style="width:100%;height:550px;border:1px solid gray" id="map"></div>
+
+        <script type="text/javascript">
+                //创建和初始化地图函数：
+                function initMap(){
+                  createMap();//创建地图
+                  setMapEvent();//设置地图事件
+                  addMapControl();//向地图添加控件
+                  addMapOverlay();//向地图添加覆盖物
+                }
+                function createMap(){
+                  map = new BMap.Map("map");
+                  map.centerAndZoom(new BMap.Point(116.597469,34.585924),7);
+                }
+                function setMapEvent(){
+                  map.enableScrollWheelZoom();
+                  map.enableKeyboard();
+                  map.enableDragging();
+                  map.enableDoubleClickZoom()
+                }
+                function addClickHandler(target,window){
+                  target.addEventListener("click",function(){
+                    target.openInfoWindow(window);
+                  });
+                }
+                //
+                function addMapOverlay(){
+                  var markers = [
+                    {content:"备注1",title:"扬州小区1",imageOffset: {width:0,height:3},position:{lat:34.787289,lng:114.196621}},
+                    {content:"我的标记2",title:"标记2",imageOffset: {width:0,height:3},position:{lat:34.630609,lng:114.004599}},
+                    {content:"我的备注",title:"我的标记",imageOffset: {width:0,height:3},position:{lat:35.01276,lng:113.980453}},
+                    {content:"彼岸",title:"发大幅度",imageOffset: {width:0,height:3},position:{lat:36.01276,lng:115.980453}}
+                  ];
+
+
+
+                  for(var index = 0; index < markers.length; index++ ){
+                    var point = new BMap.Point(markers[index].position.lng,markers[index].position.lat);
+                    var marker = new BMap.Marker(point,{icon:new BMap.Icon("http://api.map.baidu.com/lbsapi/createmap/images/icon.png",new BMap.Size(20,25),{
+                      imageOffset: new BMap.Size(markers[index].imageOffset.width,markers[index].imageOffset.height)
+                    })});
+                    var label = new BMap.Label(markers[index].title,{offset: new BMap.Size(25,5)});
+                    var opts = {
+                      width: 200,
+                      title: markers[index].title,
+                      enableMessage: false
+                    };
+                    var infoWindow = new BMap.InfoWindow(markers[index].content,opts);
+                    marker.setLabel(label);
+
+
+                    map.addOverlay(marker);               // 将标注添加到地图中
+                      addClickHandler(marker,infoWindow);
+                  };
+                  var plOpts = [
+                    {strokeColor:"#f00",strokeWeight:"4",strokeOpacity:"1"}
+                  ];
+                  var plPath = [
+                    [
+                      new BMap.Point(114.983106,35.112979),
+                      new BMap.Point(115.217671,34.775905),
+                      new BMap.Point(115.015301,34.460297),
+                      new BMap.Point(114.592163,34.116705),
+                      new BMap.Point(114.081638,34.204647),
+                      new BMap.Point(114.06784,34.216111),
+                      new BMap.Point(114.06784,34.216111),
+                      new BMap.Point(114.06784,34.216111)
+                    ],
+                  ];
+                  for(var index = 0; index < plOpts.length; index++){
+                    var polyline = new BMap.Polyline(plPath[index],plOpts[index]);
+                    map.addOverlay(polyline);
+                  }
+                }
+
+
+                //向地图添加控件
+                function addMapControl(){
+                  var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+                  scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+                  map.addControl(scaleControl);
+                  var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+                  map.addControl(navControl);
+                  var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:true});
+                  map.addControl(overviewControl);
+                }
+                var map;
+                  initMap();
+        </script>
+
+
+    <div class="view">
+                <div class="row-fluid clearfix">
+                  <div class="span4 column ui-sortable">
+                      <!--<div id="loading-center-absolute">-->
+                      <!--<div style="background-color: #071f5a; height: 200px;width: 200px;">-->
+                            <!--<div id="c" ></div>-->
+
+                      <!--</div>-->
+                     <!--</div>-->
+                      {% if status %}
+                        <span class="label label-warning">Warning:数据采集中...</span>
+                      {%else%}
+                        <span class="label"><a href="{{url_for('crawlers.run_xicispiters')}}">点击采集</a></span>
+                      {%endif%}
+
+                  </div>
+
+
+
+
+                  <div class="span4 column ui-sortable"></div>
+                </div>
+      </div>
+    <!--<script src="{{ url_for('static',filename='localding_scripts/prefixfree.min.js') }}"></script>-->
+    <!-- source image and inspiration from Ramiro Galan on Dribbble: http://dribbble.com/shots/674715-Sparkle-Light-Trail -->
+    <script src="{{ url_for('static',filename='localding_scripts/index.js') }}"></script>
+    <table class="table table-striped">
+            <!--<caption>代理数据采集</caption>-->
+            <h3>代理数据采集</h3>
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>ip</th>
+                    <th>端口</th>
+                    <th>服务器地址</th>
+
+                    <th>是否匿名</th>
+                    <th>类型</th>
+                    <th>响应速度</th>
+                    <th>连接时间</th>
+                    <th>存活时间</th>
+                    <th>验证时间</th>
+                    <!--<th>采集时间</th>-->
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <td>{{post.id}}</td>
+                    <td>{{post.ip}}</td>
+                    <td>{{post.port}}</td>
+                    <td>{{post.adress}}</td>
+                    <td>{{post.anonymous}}</td>
+                    <td>{{post.types}}</td>
+                    <td>{{post.speed}}</td>
+                    <td>{{post.Connection_time}}</td>
+                    <td>{{post.Survival_time}}</td>
+                    <td>{{post.validation_time}}</td>
+                    <!--<td>{{post.timestamp}}</td>-->
+
+                </tr>
+                {%endfor%}
+            </tbody>
+    </table>
+    <!--添加分页-->
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'crawlers.xicispiters') }}
+        </div>
+     <!--添加分页结束-->
+
+
+
+        <!--<div class="span4 column ui-sortable">-->
+                      <!--<table class="table" contenteditable="true">-->
+                            <!--<thead>-->
+                                <!--<tr>-->
+                                    <!--<th>编号</th>-->
+                                    <!--<th>产品</th>-->
+                                    <!--<th>交付时间</th>-->
+                                    <!--<th>状态</th>-->
+                                <!--</tr>-->
+                            <!--</thead>-->
+                            <!--<tbody>-->
+                                <!--<tr>-->
+                                    <!--<td>1</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>01/04/2012</td>-->
+                                    <!--<td>Default</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="success">-->
+                                    <!--<td>1</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>01/04/2012</td>-->
+                                    <!--<td>Approved</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="error">-->
+                                    <!--<td>2</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>02/04/2012</td>-->
+                                    <!--<td>Declined</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="warning">-->
+                                    <!--<td>3</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>03/04/2012</td>-->
+                                    <!--<td>Pending</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="info">-->
+                                    <!--<td>4</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>04/04/2012</td>-->
+                                    <!--<td>Call in to confirm</td>-->
+                                <!--</tr>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+                  <!--</div>-->
+
+
+    </div>
+
+
+{% endblock %}
+
+
+
+

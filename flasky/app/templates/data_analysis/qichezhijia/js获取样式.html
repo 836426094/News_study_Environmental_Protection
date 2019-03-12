@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>yugi</title>
+<meta charset=UTF-8 />
+<style type="text/css">
+.w {
+    width: 400px;
+}
+
+div::before {
+    /*display: none;*/
+  content: "哈哈哈哈";
+  color: red;
+}
+.hs_kw0_maincP::before {
+    content: "大";
+}
+</style>
+<script type="text/javascript">
+    onload = function ()
+    {
+        var css88 = document.getElementById ("css88");
+        var i = css88.style.width || css88.offsetWidth || css88.clientWidth;
+        var bg=css88.style.background;
+        alert (i+bg);
+
+    }
+
+//    onload = function ()
+//    {
+//        var css88 = document.getElementsByTagName("span");
+////        var i = css88.style.width || css88.offsetWidth || css88.clientWidth;
+//        var bg=css88.style.content;
+//        alert (bg);
+//    }
+
+//    var divStyle = docuemnt.getElementsByTagName('div');
+//    conslole.log(divStyle[0].style.cssText);
+</script>
+</head>
+<body>
+    <div id="css88" class="w" style="height: 200px; background: #333333; color: #00FF00">
+        JS获取CSS属性值</div>
+    <span class="hs_kw0_maincP"> dsfadsfdsfdsaf </span>
+
+<script>
+    var div=document.querySelector('div');
+//    var fontSize=window.getComputedStyle(div,'::before').getPropertyValue('font-size');//获取before伪元素的字号大小
+    var fontSize=window.getComputedStyle(div,'::before').getPropertyValue('content');//获取before伪元素的content
+    console.log(div);
+    console.log(fontSize);
+
+    var s=window.getComputedStyle(document.querySelector('.hs_kw0_maincP'),'::before').getPropertyValue('content');
+    console.log(s);
+////    String
+//    script = "return window.getComputedStyle(document.querySelector('#validationError'),':before').getPropertyValue('content')";
+////    JavascriptExecutor
+//    js = (JavascriptExecutor)driver;
+////    String
+//    content = (String) js.executeScript(script);
+//    System.out.println(content);
+</script>
+
+</body>
+</html>

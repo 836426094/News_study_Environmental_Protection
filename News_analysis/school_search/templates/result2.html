@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <title>校园搜索-结果</title>
+    <!--<link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style media="screen">
+        /*开始*/
+      .result {
+        width: 100%;
+        margin-left: 10px;
+        list-style: none;
+      }
+      .li_result {
+        margin-top: 20px
+      }
+      .match {
+        /*margin: auto 5px;*/
+        color: rgb(204, 0, 0);
+        /*font-size: 16px;*/
+        font-style: normal;
+        font-weight: normal;
+              }
+      .title3{
+            border-collapse: collapse;
+            color: rgb(0, 0, 204);
+            cursor: auto;
+            display: inline;
+            font-family: arial;
+            font-size: 16px;
+            font-weight: normal;
+            height: auto;
+            line-height: 24.64px;
+            list-style-image: none;
+            list-style-position: outside;
+            list-style-type: none;
+            text-decoration: underline;
+            width: auto;
+            word-wrap: break-word;
+                  }
+      form {
+        width: 600px;
+        margin: 60px auto 0 60px;
+      }
+      .input-group .form-control {
+        height: 40px;
+        width: 500px;
+      }
+      .btn.btn-primary {
+        margin: 3px 0 0 20px;
+      }
+        /*结束*/
+
+
+
+
+
+    </style>
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+
+  <div class="page-header" style="width: 15%;">
+
+
+    <!--搜索框开始-->
+    <!--<form>-->
+        <!--<div class="input-group" style="width: 100%">-->
+            <!--<input type="text" class="form-control" placeholder="关键字" name="query">-->
+            <!--<input type="submit" class="btn btn-primary" value="搜索">-->
+            <!--<br/>-->
+            <!--<div  style="position:fixed;bottom: 0;">-->
+            <!--<input type="text" class="form-control"  placeholder="过滤" name="filterstring" >-->
+            <!--<input type="submit" class="btn btn-primary" value="过滤" >-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<br>-->
+        <!--<input type="submit" hidden="hidden">-->
+    <!--</form>-->
+    <!--所搜框结束-->
+
+        {% if results %}
+            <ul class="result">
+                {% for result in results %}
+                <li class="li_result">
+                  <span>
+                  <a href="{{ result.get('url') }}" target="_blank">
+                    <h3 class="title3">{{ result.get('title') }}</h3>
+                  </a></span>
+                    <br/>
+                  <!--{% autoescape false %}-->
+                  <!--<div>{{ result.highlights('content') }}...</div>-->
+                  <!--{% endautoescape %}-->
+                  <!--<a href="{{ result.get('url') }}" style="color: #3a810b;">{{ result.get('url') }}</a>-->
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>没有结果</p>
+        {% endif %}
+
+    <!--<form>-->
+        <!--<div class="input-group" style="width: 100%">-->
+            <!--<input type="text" class="form-control" placeholder="关键字" name="query" style="display: none">-->
+            <!--<input type="submit" class="btn btn-primary" value="搜索" style="display: none">-->
+            <!--<br/>-->
+            <!--<input type="text" class="form-control"  placeholder="过滤" name="filterstring">-->
+            <!--<input type="submit" class="btn btn-primary" value="过滤">-->
+        <!--</div>-->
+
+        <!--<br>-->
+        <!--<input type="submit" hidden="hidden">-->
+    <!--</form>-->
+
+
+    <script type="text/javascript">
+      function queryParams() {
+        var str = location.search.slice(1) //query=%E4%BC%98%E7%A7%80%E6%95%99%E5%B8%88?page=5&?page=8?page=7?page=9
+
+        var query = {}
+        str.split('&').forEach(function (item) {
+            var parts = item.split('=', 2)
+            query[parts[0]] = parts[1]
+        })
+        return query
+      }
+      var query = queryParams()
+      var input = document.querySelector('.form-control')
+      input.value = decodeURIComponent(query.query).replace('+', ' ').replace('?page', ' ')
+
+    </script>
+
+      <!--分页开始-->
+      <div id='';style="margin-left: 50px;">
+          <ul class="pagination">
+
+            <li><a href="{{pageurllist[nowpage-1]}}">&laquo;</a></li>
+
+                {% if pagination > 10 %}
+                    {% if nowpage < 5 %}
+                        {% for p in pageurllist[1:nowpage+10-nowpage] %}
+                          {% if nowpage == pageurllist.index(p) %}
+                          <li class="active">
+                              <a href="{{p}}">{{ pageurllist.index(p) }}</a>
+                          </li>
+                          {% else %}
+                              <li><a href="{{p}}">{{ pageurllist.index(p) }}</a></li>
+                          {% endif %}
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        {% for p in pageurllist[nowpage-5:nowpage+5] %}
+                            {% if nowpage == pageurllist.index(p) %}
+                            <li class="active">
+                                <a href="{{p}}">{{ pageurllist.index(p) }}</a>
+                            </li>
+                            {% else %}
+                                <li><a href="{{p}}">{{ pageurllist.index(p) }}</a></li>
+                            {% endif %}
+
+                        {% endfor %}
+                    {% endif %}
+                {% else %}
+                    {% for p in pageurllist[1:] %}
+                        {% if nowpage == pageurllist.index(p) %}
+                      <li class="active">
+                          <a href="{{p}}">{{ pageurllist.index(p) }}</a>
+                      </li>
+                      {% else %}
+                          <li><a href="{{p}}">{{ pageurllist.index(p) }}</a></li>
+                      {% endif %}
+
+                    {% endfor %}
+
+                {% endif %}
+
+            <li><a href="{{ pageurllist[nowpage+1] }}">&raquo;</a></li>
+            <li><span>共{{pagination-1}}页</span></li>
+          </ul>
+
+      </div>
+      <!--分页结束-->
+
+
+
+  </div>
+
+  <div style="float: left;width: 50%;">
+      内容
+  </div>
+
+  </body>
+</html>
+
+
+

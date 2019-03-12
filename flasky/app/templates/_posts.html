@@ -1,0 +1,71 @@
+
+<ul class="posts">
+
+    {% for post in posts %}
+    <li class="post list-unstyled">
+        <!--user info start-->
+        <div class="post-thumbnail ">
+            <a href="{{ url_for('.user', username=post.author.username) }}">
+                <!--<img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=40) }}">-->
+                <img class="img-circle" data-src="holder.js/30x30" alt="30x30" style="width: 30px; height: 30px;" src="{{ post.author.gravatar(size=30)}}">
+                <!--<img class="img-rounded" data-src="holder.js/40x40" alt="40x40" style="width: 40px; height: 40px;" src="{{ post.author.gravatar(size=40)}}">-->
+            </a>
+
+            <a href="{{ url_for('.user', username=post.author.username) }}"><span class="glyphicon glyphicon-user"></span>  {{ post.author.username }}</a>
+
+            <span class="post-date  "> <b> 发表于 </b> {{ moment(post.timestamp).fromNow(refresh=True) }}</span>
+
+
+
+        </div>
+        <!--user info end-->
+
+        <div class="post-content">
+
+
+            <!--Markdown post page handle  start-->
+            <div class="post-body">
+                {% if post.body_html %}
+                    {{ post.body_html | safe }}
+                {% else %}
+                    {{ post.body }}
+                {% endif %}
+            </div>
+            <!--Markdown post page handle  end-->
+
+            <!--post page link start-->
+            <div class="post-footer">
+                <a href="{{ url_for('.post', id=post.id) }}">
+                        <span class="label label-default">查看更多</span>
+                </a>
+                <!--<span>-->
+
+
+                <!--post page link start-->
+                    {% if current_user == post.author %}
+                    <a href="{{ url_for('.edit', id=post.id) }}">
+                      <span class="label label-primary">编辑</span>
+                    </a>
+
+                    {% elif current_user.is_administrator() %}
+                    <a href="{{ url_for('.edit', id=post.id) }}">
+                      <span class="label label-danger">编辑 [Admin]</span>
+                    </a>
+                    {% endif %}
+                <!--post page link end-->
+
+                <!--comments  start -->
+                    <a href="{{ url_for('.post', id=post.id) }}#comments">
+                      <span class="label label-primary">
+                        {{ post.comments.count() }} 评论
+                      </span>
+                    </a>
+                <!--comments end -->
+                <!--</span>-->
+            </div>
+            <!--post page link end-->
+        </div>
+    </li>
+    <hr/>
+    {% endfor %}
+</ul>

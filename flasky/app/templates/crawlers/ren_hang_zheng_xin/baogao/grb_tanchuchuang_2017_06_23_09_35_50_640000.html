@@ -1,0 +1,285 @@
+
+html><head><script type="text/javascript">var _BASEPATH_='https://ipcrs.pbccrc.org.cn/';</script>
+<script src="https://ipcrs.pbccrc.org.cn/js/pe.js" type="text/javascript"></script>
+
+
+
+<title>中征信个人信用信息服务平台-获取信用信息</title>
+<link type="text/css" href="css/public.css" rel="stylesheet">
+<link type="text/css" href="css/page.css" rel="stylesheet">
+<script src="js/jquery.js" type="text/javascript"></script>
+<script src="js/select.js" type="text/javascript"></script>
+<script src="js/input_notice.js" type="text/javascript"></script>
+       
+
+<script type="text/JavaScript">
+function checkCode(code,reportformat){
+var returnvalu;
+$.ajax({
+  	cache:false,
+    type:"post",
+    async: false,
+	url:"reportAction.do",
+	data:{method:"checkTradeCode",code:code,reportformat:reportformat},
+	dataType:"text",
+	success:function(result){
+		if(result == 0){
+			$("#codeinfo").text(""); 
+			$("#codeinfo").removeClass("no").addClass("yes");
+			returnvalu= true;
+		}else if(result == 1){
+			$("#codeinfo").text("身份验证码不正确");
+			$("#codeinfo").removeClass("yes").addClass("no"); 
+			returnvalu= false;
+		}
+	}
+ 	});
+ 	return returnvalu;
+}
+
+function clickHandler() {
+	cleanMsg();
+	var radios = document.getElementsByName('reportformat'), radvalue;
+	for ( var i = 0; i < radios.length; i++) {
+		var rad = radios[i];
+		if (rad.checked) {
+			radvalue = rad.value;
+			break;
+		}
+	}
+	
+	if (!checkRadios()) {
+		$("#messages").text("请选择一版信息。");
+		return;
+	}
+	if ($('#tradeCode').val() == '') {
+		$("#codeinfo").text("请输入身份验证码。");
+		$("#codeinfo").removeClass("yes").addClass("no"); 
+		return;
+	}else  {
+	}
+	var format = $('input:radio[name=reportformat]:checked').val();
+	if(checkCode($('#tradeCode').val(),format)==true){
+		if (radvalue == '25') {
+			form3.action = 'reportAction.do?method=viewReport';
+		} else if (radvalue == '24') {
+			form3.action = 'summaryReport.do?method=viewReport';
+		} else if (radvalue == '21') {
+			form3.action = 'simpleReport.do?method=viewReport';
+		} else if (radvalue == 'd') {
+			window.open('search_4_2.html');
+		}
+		form3.submit();
+	}else{
+		$("#codeinfo").text("身份验证码不正确。");
+		$("#codeinfo").removeClass("yes").addClass("no"); 
+		return;
+	}
+}
+
+function cleanMsg(){
+	$("#messages").text("");
+}
+
+function checkRadios() {
+    //后台生成的代码
+	var radio = document.getElementsByName("reportformat");
+	var flag = false;
+	if (radio != null) {
+		for ( var i = 0; i < radio.length; i++) {
+			if (radio[i].checked == true) {
+				flag = true;
+			}
+		}
+	}
+	return flag;
+}
+
+function checktel(obj){
+	if($('#tradeCode').val()!=''){
+		$('#codeinfo').html('');
+		$("#codeinfo").removeClass("no").addClass("yes");
+	}else{
+		$('#codeinfo').html('身份验证码不能为空。');
+		$("#codeinfo").removeClass("yes").addClass("no");
+	}
+}
+
+function chkReport() {
+	var values1 = "";
+	$("[name='reportformat']").each(function() {
+		if ($(this).attr("disabled")) {
+			values1 += $(this).val() ;
+		}
+	});
+	if (values1 == '252421') {
+		return 'true';
+	}
+}
+$(function() {
+	if (chkReport() == "true") {
+		$('#nextstep').removeClass('regist_btn').addClass('regist_btn-1').attr('disabled','true');//.hide();
+		$('#tradeCode').attr('disabled','true');
+		$('#tradecodeBu').attr('disabled','true');
+		
+		
+			$("#messages").text("暂无信息");
+		
+	}
+});
+	function send(){
+		cleanMsg();
+		if (!checkRadios()) {
+		$("#messages").text("请选择一版信息。");
+		return;
+	}
+	var format = $('input:radio[name=reportformat]:checked').val();
+	$.ajax( {
+		type : "post",
+		url : "reportAction.do?num=" + Math.random(),
+		data : {
+			method : "sendAgain",
+			reportformat : format
+		},
+		dataType : "text",
+		success : function(result) {
+			if("success" === result){
+			        $("#messages").text('');
+					$("#messages1").html('身份验证码已发送到您本次申请查询信息时预留的手机上，请耐心等待。');
+				}else if("noTradeCode" === result){
+				    $("#messages1").html('');
+					$("#messages").text('系统异常，请重新申请信用信息产品。');
+				}else{
+					$("#messages").text('获取动态码错误!');
+				}
+		}
+	});
+		sub('120');
+	 } 
+	function sub(count) {
+	var obj = document.getElementById("tradecodeBu");
+	if (obj != null) {
+		if (count > 1) {
+			obj.disabled = true;
+			count--;
+			obj.value = count;
+			document.getElementById("counttime").value = count;
+			window.setTimeout("sub(" + count + ")", 1000);
+		} else {
+			obj.disabled = false;
+			obj.value = "未收到身份验证码？";
+		}
+	}
+}
+</script>
+</head>
+
+<body onkeydown="if(event.keyCode==13){return false}">
+<form id="form3" name="form3" method="post" action="simpleReport.do?method=viewReport" target="_blank">
+  <div class="con_right">
+	<div class="right_now">&nbsp;
+	  <span>当前位置：</span><span>信息服务</span><span> &gt; 获取信用信息</span>
+    </div>
+    <div class="title-2">
+	  <span>获取信用信息</span>
+    </div>
+	<div class="right_con">
+			<div class="erro_div1">
+			<input name="counttime" id="counttime" value="" type="hidden">
+				<span id="messages"></span>
+			</div>
+			<div class="table-con4 padding_top_10">
+				<ul class=" ul_l div_left">
+					<li>
+						<font class="regist_text span-14"><label class="span-red">
+								*
+							</label> 选择信用信息：</font>
+							<span class="notice1 span-grey"> 请输入身份验证码。</span>
+					 <span class="span-grey" id="formatinfo"></span>
+					</li>
+				</ul>
+				<ul class=" ul_r div_left" style="margin-left: 12px; position: relative;">
+					<li>
+						<input class="radio_type" name="reportformat" value="25" id="radiobutton3" type="radio">
+						<label class="span-14 span-grey2">
+							个人信用信息提示
+						</label>
+						&nbsp;&nbsp;
+						<font class="span-red span-12"></font>
+						<div class="position_re">
+							<span id="s_notice1_t8" class="s_notice1_t position_top2"><a href="#">
+							</a> </span>
+							<div id="s_notice1_con8">
+									一句话的方式提示您在个人征信系统中是否存在最近5年的逾期记录，也可通过发送短信代码申请查询。
+							</div>
+						</div>
+					</li>
+					<li class="padding_t15">
+
+						<input class="radio_type" name="reportformat" value="24" id="radiobutton2" type="radio">
+						<label class="span-14 span-grey2">
+							个人信用信息概要
+						</label>
+						&nbsp;&nbsp;
+						<font class="span-red span-12"></font>
+						<div class="position_re">
+							<span id="s_notice1_t5" class="s_notice1_t position_top2"><a href="#">
+							</a> </span>
+							<div id="s_notice1_con5">
+									展示您的个人信用状况概要，包括信贷记录、公共记录和查询记录的汇总统计信息。
+							</div>
+						</div>
+					</li>
+					<li class="padding_t15">
+
+						<input class="radio_type" name="reportformat" value="21" id="radiobutton1" type="radio">
+						<label class="span-14 span-grey2">
+							个人信用报告
+						</label>
+						&nbsp;&nbsp;
+						<font class="span-red span-12"></font>
+						<div class="position_re">
+							<span id="s_notice1_t6" class="s_notice1_t position_top2"><a href="#">
+							</a>
+							</span>
+							<div id="s_notice1_con6">
+									展示您个人信用信息的基本情况，包括信贷记录、部分公共记录和查询记录的明细信息。
+							</div>
+						</div>
+					</li>
+				</ul>
+				<div style="clear: both"></div>
+			</div>
+			<!--table-con4  end-->
+
+
+			<div class="table-con4 padding_top_20">
+				<ul>
+					<li class="padding_top_10">
+						<font class="regist_text span-14"><label class="span-red">
+								*
+							</label> 身份验证码：</font>
+						<input name="tradeCode" id="tradeCode" maxlength="6" class="login_input yzm_input border_grey" onfocus="displayYes(this);cleanMsg()" onblur="displayNo(this);checktel(this)" autocomplete="off" type="text">
+							
+							<input class="earn_yl" id="tradecodeBu" value="未收到身份验证码？" onclick="send();" type="button">
+							<span class="notice1 span-grey" style="display: inline;"> 请输入身份验证码。</span>
+					 <span class="span-grey yes" id="codeinfo" style="display: none;"></span></li>
+					<li class="padding_top_10">
+								            <font class="regist_text"></font>
+								            <span class="span-red" id="messages1"></span>
+								     </li>
+					<li class="padding_top_30">
+						<font class="regist_text">&nbsp;</font>
+						<input name="" id="nextstep" class="regist_btn span-14 span-white" value="提交" onclick="clickHandler()" type="button">
+					</li>
+				</ul>
+			</div>
+			<!--table-con4  end-->
+	</div>
+	<!--right_con  end-->
+  </div>
+</form>
+	<!--right end-->
+
+
+</body></html>

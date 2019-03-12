@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <title>爬虫管理</title>
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+    <style media="screen">
+      .wrap {
+        width: 600px;
+        text-align: center;
+        margin: 100px auto;
+      }
+      .form-control {
+        width: 80%;
+        display: inline-block;
+      }
+      .btn {
+        transform: translateY(-2px);
+        margin-left: 20px;
+      }
+      .bg-success {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 6px;
+        color: green;
+        font-weight: bold;
+      }
+
+    </style>
+  </head>
+  <body>
+
+  {% include 'navbaradmin.html' %}
+
+    <div class="page-header">
+
+
+                  <!--&lt;!&ndash;<div class="jindutiao" style="margin:0 auto; width: 80%;">&ndash;&gt;-->
+                  <!--<div>-->
+
+                      <!--&lt;!&ndash;<div class="progress" >&ndash;&gt;-->
+                      <!--<span ><a href="#">-->
+
+
+                           <!--{% if work_status %}-->
+                        <!--<strong>手动运行 </strong><button type="button" class="btn btn-success">运行work 爬虫</button>-->
+                          <!--{% else %}-->
+                        <!--<button type="button" class="btn btn-danger">work 爬虫运行中...</button>-->
+                          <!--{% endif %}-->
+                      <!--</a></span>-->
+                      <!--&lt;!&ndash;<div class="progress progress-striped active progress-success" style="width: 40%;margin: 0 auto;display: inline-block;">&ndash;&gt;-->
+                          <!--&lt;!&ndash;<div class="progress-bar" role="progressbar" aria-valuenow="60"&ndash;&gt;-->
+                              <!--&lt;!&ndash;aria-valuemin="0" aria-valuemax="100" style="width: 50%;">&ndash;&gt;-->
+                              <!--&lt;!&ndash;&lt;!&ndash;<span class="sr-only">50% 完成</span>&ndash;&gt;&ndash;&gt;-->
+                          <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</div><span >50%</span>&ndash;&gt;-->
+
+                  <!--</div>-->
+ <!---->
+        <!--<hr/>-->
+
+
+        <div  style="width: 60%;margin: 0 auto;">
+
+
+<form class="form-horizontal" role="form" action="/spiter" method="post">
+        <input type="text" class="form-control"   value="manual" name="formtype" style="display: none;">
+
+        <h3 style="margin-bottom: 50px">
+        爬虫管理--手动
+        <!--{{ count }}-->
+      </h3>
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+
+            <th style="text-align: center">运行状态</th>
+            <th style="text-align: center">更新条数</th>
+            <th style="text-align: center">手动运行</th>
+          </tr>
+        </thead>
+        <tbody style="text-align: center">
+          <tr>
+            <td>
+                 {% if news_status=='runing...' %}
+                    <input type="text" value="{{news_status}}" class="btn btn-danger" name="status" style="display: none;">
+                    <input type="button" value="{{news_status}}" class="btn btn-danger" >
+                  {% else %}
+                    <input type="text" value="{{news_status}}" class="btn btn-danger" name="status" style="display: none;">
+                    <input type="button" value="{{news_status}}" class="btn btn-success">
+                  {% endif %}
+            </td>
+            <td>
+                {{updatacount}}
+            </td>
+            <td>
+                {% if news_status=='runing...' %}
+                <input type="SUBMIT" value="关闭" class="btn btn-success">
+
+                  {% else %}
+                <input type="SUBMIT" value="运行" class="btn btn-success">
+                <!--<input type="button" value="爬虫运行中..." class="btn btn-danger">-->
+                  {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+</form>
+
+
+<form class="form-horizontal" role="form" action="/spiter" method="post">
+        <input type="text" class="form-control"   value="timing" name="formtype" style="display: none;">
+
+        <h3 style="margin-bottom: 50px">
+        爬虫管理--定时
+        <!--{{ count }}-->
+      </h3>
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <!--<th style="text-align: center">手动运行</th>-->
+            <th style="text-align: center">定时启动</th>
+            <th style="text-align: center">定时关闭</th>
+            <th style="text-align: center">更新条数</th>
+          </tr>
+        </thead>
+        <tbody style="text-align: center">
+
+          <tr>
+
+
+            <td>
+                <!--<input type="checkbox" name="news_starttiming_status" value="1">-->
+                 <input type="datetime" class="form-control" placeholder="请输入时间" name="news_starttiming"
+                 {% if news.starttiming=="0" %} {% else %} value="{{ news.starttiming }}" {% endif %}
+                 >
+             </td>
+            <td>
+                <!--<input type="checkbox" name="news_endtiming_status" value="1">-->
+                <input type="datetime" class="form-control"placeholder="请输入时间" name="news_endtiming"
+                {% if news.endtiming=="0" %} {% else %} value="{{ news.endtiming }}" {% endif %}
+                >
+            </td>
+
+             <td>
+                {{updatacount}}
+            </td>
+          </tr>
+
+            <tr>
+
+                <td>输入时间的格式如:2017-12-12 12:01:01</td>
+                <td>
+                    <input type="submit" value="确定" class="btn btn-primary">
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+      </table>
+
+
+            <!--</form>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!---->
+                <!--<main class="wrap"/>-->
+                  <!--<h3 style="margin-bottom: 50px">-->
+                    <!--爬虫数据-->
+                    <!--&lt;!&ndash;{{ count }}&ndash;&gt;-->
+                  <!--</h3>-->
+                  <!--<table class="table table-striped table-bordered table-hover">-->
+                    <!--<thead>-->
+                      <!--<tr>-->
+                        <!--<th style="text-align: center">开始时间</th>-->
+                        <!--<th style="text-align: center">结束时间</th>-->
+                        <!--<th style="text-align: center">更新条数</th>-->
+                      <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                      <!--{% for query in querys %}-->
+                      <!--<tr>-->
+                        <!--<td>{{ query.value }}</td>-->
+                        <!--<td>{{ query.count }}</td>-->
+                        <!--<td>{{ query.count }}</td>-->
+                      <!--</tr>-->
+                      <!--{% endfor %}-->
+                    <!--</tbody>-->
+                  <!--</table>-->
+                  <!--<form class="form-horizontal" role="form" action="/statistics" method="post">-->
+                    <!--<div class="form-group">-->
+                        <!--<input type="text" class="form-control"   value="urlform" name="formtype" style="display: none;">-->
+            <!---->
+                      <!--<label for="url" class="col-sm-2 control-label">种子网址</label>-->
+                      <!--<div class="col-sm-10">-->
+                        <!--<input type="text" class="form-control" id="url" placeholder="url" value="{{ start_url }}" name="start_url">-->
+                        <!--<input type="submit" value="保存" class="btn btn-primary">-->
+                      <!--</div>-->
+                    <!--</div>-->
+                <!--</form>-->
+
+        </div>
+
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js获取数据</title>
+
+    <script type=text/javascript src="http://s7.qhimg.com/static/6ee37f0bc1032f2c/jquery-2.0.0.min.js"></script>
+    <!--<script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>-->
+
+
+
+
+</head>
+<body>
+
+
+
+<div style="width:100px; height:100px; border:1px solid #ccc;">
+    <a href="#">111111</a>
+</div>
+
+
+<script>
+
+    var oDiv = document.getElementsByTagName('div')[0];
+    var last=JSON.stringify(oDiv.innerHTML);
+    alert(oDiv.innerHTML);   //这样就可以获取div标签里面所有的内容。
+
+//    function post(url, params) {
+//        var tempForm = document.createElement("form");
+//        tempForm.action = url;
+//        tempForm.method = "post";
+//        tempForm.style.display = "none";
+//        for (var x in params) {
+//            var opt = document.createElement("textarea");
+//            opt.name = x;
+//            opt.value = params[x];
+//            // alert(opt.name)
+//            tempForm.appendChild(opt);
+//        }
+//        document.body.appendChild(tempForm);
+//        tempForm.submit();
+//        return tempForm;
+//    }
+//
+//    //调用方法
+//    post('http://172.16.1.159:5000/data_analysis/_add_numbers', {username : last, password : 'yyyy'});
+
+</script>
+
+<div id="aa"></div>
+
+<script type=text/javascript>
+
+
+
+
+//    var oDiv = document.getElementsByTagName('div')[0];
+//    var oDiv='dsjkfldsjlafds';
+//    $.ajax({
+//        url: 'http://172.16.1.159:5000/data_analysis/_add_numbers',
+//
+//        type: '',
+//        dataType: '',
+//        data: {
+//            oDiv:oDiv
+//        },
+//    success: function(){
+//
+//     },
+//     error: function(){
+//
+//    }
+//
+//    })
+url='http://172.16.1.159:5000/data_analysis/_add_numbers';
+
+//var Ajax={
+////    get: function (url,fn){
+////        var obj=new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
+////        obj.open('GET',url,true);
+////        obj.onreadystatechange=function(){
+////            if (obj.readyState == 4 && obj.status == 200 || obj.status == 304) { // readyState==4说明请求已完成
+////                fn.call(this, obj.responseText);  //从服务器获得数据
+////            }
+////        };
+////        obj.send(null);
+////    },
+//
+//    post: function (url, data, fn) {
+//        var obj = new XMLHttpRequest();
+//        obj.open("POST", url, true);
+//        obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // 发送信息至服务器时内容编码类型
+//        obj.onreadystatechange = function () {
+//            if (obj.readyState == 4 && (obj.status == 200 || obj.status == 304)) {  // 304未修改
+//                fn.call(this, obj.responseText);
+//            }
+//        };
+//        obj.send(data);
+//    }
+//}
+//
+//
+//
+
+  $(function() {
+    $('a#calculate').bind('click', function() {
+      $.getJSON('http://172.16.1.159:5000/data_analysis/_add_numbers',
+              {
+                a: $('input[name="a"]').val(),
+                b: $('input[name="b"]').val(),
+                  oDiv:oDiv,
+              },
+              function(data) {
+                $("#result").text(data.result);
+              }
+      );
+      return false;
+    });
+  });
+</script>
+<h1>jQuery Example</h1>
+<p><input type=text size=5 name=a> +
+   <input type=text size=5 name=b> =
+   <span id=result>?</span>
+<p><a href=# id=calculate>calculate server side</a>
+
+
+<script language="javascript">
+
+
+//    var fso, tf;
+//    fso = new ActiveXObject("Scripting.FileSystemObject");
+//    // 创建新文件
+//    tf = fso.CreateTextFile("F:\\mydata\\业务\\足球页面监控\\testfile.txt", true);
+//    // 填写数据，并增加换行符
+//    tf.WriteLine("Testing 1, 2, 3.") ;
+//    // 增加3个空行
+//    tf.WriteBlankLines(3) ;
+//    // 填写一行，不带换行符
+//    tf.Write ("This is a test.");
+//    // 关闭文件
+//    tf.Close();
+
+//    $.ajax(function()
+//        {
+//        url:'http://localhost:5000/data_analysis/posthtml',
+//        type:'post|get',
+//        data:val,
+//        success:function()
+//        {
+//        ///提交成功后的代码
+//        },
+//        error:function()
+//        {
+//        ///提交失败时的代码
+//        })
+//    var val = arr.join(',');
+//
+
+
+//    var fso, ts, s ;
+//    var ForReading = 1;
+//
+////    fso = new ActiveXObject("Scripting.FileSystemObject");
+//    ts = fso.OpenTextFile("F:\\mydata\\业务\\足球页面监控\\testfile.txt", ForReading);
+//    s = ts.ReadLine();
+//    document.getElementById("aa").innerHTML=s;
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

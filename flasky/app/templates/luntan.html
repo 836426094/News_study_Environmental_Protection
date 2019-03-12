@@ -1,0 +1,63 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}论坛{% endblock %}
+
+ {% block scripts %}
+        {{ super() }}
+        {{ pagedown.include_pagedown() }}
+ {% endblock %}
+
+{% block page_content %}
+
+    <div class="page-header">
+<!--&lt;!&ndash;测试登入&ndash;&gt;-->
+        <!--<h3>Hello,{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}想查看更多内容,请登入...{% endif %}</h3>-->
+<!--&lt;!&ndash;测试登入结束&ndash;&gt;-->
+
+        <!--<div>The local date and time is {{ moment(current_time).format('LLL') }}.-->
+            <!--<em>That was {{ moment(current_time).fromNow(refresh=True) }}</em>-->
+            <!--<p><a href="{{url_for('main.for_admins_only')}}">ADMIN接口</a>　｜　<a href="{{url_for('main.for_moderators_only')}}">版主</a></p>-->
+        <!--</div>-->
+
+    <!--用户评论接口开始-->
+        <div>
+          {% if current_user.can(Permission.WRITE_ARTICLES) %}
+          <!--{{ wtf.quick_form(form) }}-->
+            <script src="//cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
+            <div>
+              <!--{{ wtf.quick_form(form) }}-->
+                <!--这个是ckeditor-->
+                <form method="post" action="">
+                    {{form.csrf_token}}
+                    {{form.body(class="ckeditor")}}
+                    <button type="submit" class="btn btn-success">提交</button>
+                </form>
+
+            </div>
+
+          {% endif %}
+        </div>
+        <p></p>
+
+    <!--导入文章模块-->
+        {% include '_posts.html' %}
+    <!--导入文章模块结束-->
+
+    <!--添加分页-->
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'main.luntan') }}
+        </div>
+     <!--添加分页结束-->
+
+<!--用户评论接口结束-->
+
+    </div>
+
+
+{% endblock %}
+
+
+
+

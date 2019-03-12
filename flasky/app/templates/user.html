@@ -1,0 +1,93 @@
+
+{% extends "base.html" %}
+
+{% block title %}User{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    {% block page_content %}
+    <div class="page-header">
+        <div class="row clearfix">
+            <div class="col-sm-6 column ui-sortable">
+            <img class=" img-rounded profile-thumbnail pull-left" src="{{ user.gravatar(size=256) }}">
+
+            </div>
+            <div class="profile-header col-sm-6 column ui-sortable">
+            <h1>{{ user.username }}</h1>
+
+            {% if user.name or user.location %}
+            <p>
+                {% if user.name %}{{ user.name }}{% endif %}
+                {% if user.location %}
+
+                    From <a href="http://map.baidu.com/?newmap=1&l=12&tn=B_NORMAL_MAP&s=con%26from%3Dalamap%26tpl%3Dmapcity%26wd%3D{{ user.location }}%26c%3D261">
+                        {{ user.location }}
+                    </a>
+                {% endif %}
+            </p>
+            {% endif %}
+
+            <!--检查是否是管理员-->
+            {% if current_user.is_administrator() or current_user.is_MODERATE_COMMENTS %}
+            <p>邮箱：<a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+            {%else%}
+            <p>邮箱：********   <a href="#">点击开通会员查看邮箱</a></p>
+            {% endif %}
+            <!--检查是否是管理员结束-->
+            {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+            <p>
+                Member since {{ moment(user.member_since).format('L') }}.
+                Last seen {{ moment(user.last_seen).fromNow() }}.
+            </p>
+            {% if user == current_user %}
+            <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">
+            Edit Profile
+            </a>
+            {% endif %}
+
+            {% if current_user.is_administrator() %}
+            <a class="btn btn-danger"
+            href="{{ url_for('.edit_profile_admin', id=user.id) }}">
+            Edit Profile [Admin]
+            </a>
+            {% endif %}
+            <!--添加关注信息开始-->
+
+            {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                {% if not current_user.is_following(user) %}
+                <a href="{{ url_for('.follow', username=user.username) }}"
+                    class="btn btn-primary">Follow</a>
+                {% else %}
+                <a href="{{ url_for('.unfollow', username=user.username) }}"
+                    class="btn btn-default">Unfollow</a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ url_for('.followers', username=user.username) }}">
+                Followers: <span class="badge">{{ user.followers.count() }}</span>
+            </a>
+            <a href="{{ url_for('.followed_by', username=user.username) }}">
+                Following: <span class="badge">{{ user.followed.count() }}</span>
+            </a>
+            {% if current_user.is_authenticated and user != current_user and
+                user.is_following(current_user) %}
+            | <span class="label label-default">Follows you</span>
+            {% endif %}
+
+            <!--添加关注信息结束-->
+        </div>
+        </div>
+    </div>
+    {% endblock %}
+
+
+<!--显示文章的资料页面-->
+        {%if user%}
+        <h3>Posts by {{ user.username }}</h3>
+        {% include '_posts.html' %}
+        {%endif%}
+<!--显示文章的资料页面结束-->
+
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+<ul class="comments">
+    {% for comment in comments %}
+    <li class="comment list-unstyled">
+        <div class="comment-thumbnail">
+            <a href="{{ url_for('.user', username=comment.author.username) }}">
+                <!--<img class="img-rounded profile-thumbnail" src="{{ comment.author.gravatar(size=40) }}">-->
+                <img class="img-circle" data-src="holder.js/30x30" alt="30x30" style="width: 30px; height: 30px;" src="{{ comment.author.gravatar(size=30)}}">
+
+            </a>
+
+            <span class="comment-author"><a href="{{ url_for('.user', username=comment.author.username) }}"> {{ comment.author.username }} </a></span>
+
+            <span class="comment-date"> {{ moment(comment.timestamp).fromNow() }} </span>
+
+        </div>
+        <div class="comment-content">
+
+            <div class="comment-body">
+                {% if comment.disabled %}
+                <p><i>This comment has been disabled by a moderator.</i></p>
+                {% endif %}
+                {% if moderate or not comment.disabled %}
+                    {% if comment.body_html %}
+                          {{ comment.body_html | safe }}
+                    {% else %}
+                        {{ comment.body }}
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% if moderate %}
+                <br>
+                {% if comment.disabled %}
+                <a class="btn btn-default btn-xs" href="{{ url_for('.moderate_enable', id=comment.id, page=page) }}">显示</a>
+                {% else %}
+                <a class="btn btn-danger btn-xs" href="{{ url_for('.moderate_disable', id=comment.id, page=page) }}">屏蔽</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+    </li>
+    <hr/>
+    {% endfor %}
+</ul>

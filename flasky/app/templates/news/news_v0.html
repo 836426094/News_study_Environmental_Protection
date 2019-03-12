@@ -1,0 +1,442 @@
+
+{% extends "news_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}打标签{% endblock %}
+
+ {% block scripts %}
+        {{ super() }}
+        {{ pagedown.include_pagedown() }}
+
+ {% endblock %}
+
+
+
+
+
+{% block content %}
+
+
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="http://api.map.baidu.com/api?key=46ce9d0614bf7aefe0ba562f8cf87194&v=1.0&services=false"></script>
+
+        <!--<h2>新闻分析</h2>-->
+        <!--创建地图容器元素-->
+            <script src="{{ url_for('static',filename='localding_scripts/index.js') }}"></script>
+
+        <script>
+            function  func_insert(e){
+                var uid= $(e).attr("oid");
+                var msgtitles=$(e).attr("title");
+                var txt=$(e).attr("data-value");
+                var url=$(e).attr("url");
+                var datadate=$(e).attr("datadate");
+                var ss2='<span style=" display:none;"></span>';
+
+            document.getElementById("msgtitle").innerHTML = msgtitles;
+            document.getElementById("Content").innerHTML = txt;
+            document.getElementById("Content_f").innerHTML = '<iframe name="fname" width="100%" height="1000" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes"></iframe>';
+            document.getElementById("newsidlable").innerHTML = '<span style=" display:none;" ><input type="text" name="ID" value="'+uid+'"></span>'+
+                    '<h5 >'+msgtitles+'</h5> <br/>'+'<span style=" display:none;"><input type="text"  name="title" value="'+msgtitles+'"></span>';
+
+//'<span style=" display:none;">新闻ID<input type="text" name="url" value="'+url+'"></span>'+
+//'<span style=" display:none;">新闻ID<input type="text" name="title" value="'+msgtitles+'"></span>'+
+//'<span style=" display:none;">新闻ID<input type="text" name="datatate" value="'+datadate+'"></span>'+
+//'<span style=" display:none;">新闻ID<input type="text" name="content" value="'+txt+'"></span>'
+            document.getElementById("prompt_info").innerHTML = ss2;//将提示清空
+            };
+
+            function  func_insert2(e){
+                var uid= $(e).attr("oid");
+                var msgtitles=$(e).attr("title");
+                var txt=$(e).attr("data-value");
+                var url=$(e).attr("url");
+                var datadate=$(e).attr("datadate");
+                var ss2='<span style=" display:none;"></span>';
+
+            document.getElementById("msgtitle").innerHTML = msgtitles;
+            document.getElementById("Content").innerHTML = txt;
+            document.getElementById("newsidlable").innerHTML = '<span style=" display:none;" ><input type="text" name="ID" value="'+uid+'"></span>'+
+                    '<h5 >'+msgtitles+'</h5> <br/>'+'<span style=" display:none;"><input type="text"  name="title" value="'+msgtitles+'"></span>';
+
+//'<span style=" display:none;">新闻ID<input type="text" name="url" value="'+url+'"></span>'+
+//'<span style=" display:none;">新闻ID<input type="text" name="title" value="'+msgtitles+'"></span>'+
+//'<span style=" display:none;">新闻ID<input type="text" name="datatate" value="'+datadate+'"></span>'+
+//'<span style=" display:none;">新闻ID<input type="text" name="content" value="'+txt+'"></span>'
+            document.getElementById("prompt_info").innerHTML = ss2;//将提示清空
+            };
+
+
+//            清空表单
+            function ClearForm() {
+//                var id=$(e).attr("id");
+                var objId = document.getElementById('form_select');
+                if (objId == undefined) {
+                    return;
+                }
+                for (var i = 0; i < objId.elements.length; i++) {
+                    if (objId.elements[i].type == "text") {
+                        objId.elements[i].value = "";
+                    }
+                    else if (objId.elements[i].type == "password") {
+                        objId.elements[i].value = "";
+                    }
+                    else if (objId.elements[i].type == "radio") {
+                        objId.elements[i].checked = false;
+                    }
+                    else if (objId.elements[i].type == "checkbox") {
+                        objId.elements[i].checked = false;
+                    }
+                    else if (objId.elements[i].type == "select-one") {
+                        objId.elements[i].options[0].selected = true;
+                    }
+                    else if (objId.elements[i].type == "select-multiple") {
+                        for (var j = 0; j < objId.elements[i].options.length; j++) {
+                            objId.elements[i].options[j].selected = false;
+                        }
+                    }
+                    else if (objId.elements[i].type == "textarea") {
+                        objId.elements[i].value = "";
+                    }
+                    //else if (objId.elements[i].type == "file") {
+                    // //objId.elements[i].select();
+                    // //document.selection.clear();
+                    // // for IE, Opera, Safari, Chrome
+                    // var file = objId.elements[i];
+                    // if (file.outerHTML) {
+                    // file.outerHTML = file.outerHTML;
+                    // } else {
+                    // file.value = ""; // FF(包括3.5)
+                    // }
+                    //}
+                }
+            }
+//            清空表单结束
+
+
+        </script>
+
+        <style>
+                /*ul li a:hover{*/
+                /*display:block;*/
+                /*background:#0193de;*/
+                /*width:125px;*/
+                /*height:43px;*/
+                /*}*/
+        </style>
+
+    <!--<script src="{{ url_for('static',filename='localding_scripts/prefixfree.min.js') }}"></script>-->
+    <!-- source image and inspiration from Ramiro Galan on Dribbble: http://dribbble.com/shots/674715-Sparkle-Light-Trail -->
+<section style="padding: 0;position: relative;height:80%; ">
+            <!--新闻标题栏-->
+        	<div style="border: 1px solid #edf1f2;float: left;height:100%;width: 23%; background-color: #fff;">
+				<div class="panel" style="height: 100%;margin-bottom:0px;">
+                    <header class="panel-heading">
+                       		<h3>新闻栏目标题</h3>
+                    </header>
+                    <!--新闻题目栏-->
+                    <ul class="list-group teammates">
+                        <li class="list-group-item"><span class="label label-danger inline m-t-15">查看清理后的内容</span><span class="pull-right label label-danger inline m-t-15" >查看源文</span></li>
+                        {% for post in posts %}
+
+
+                            <li class="list-group-item">
+                                <!--<a href=""><img src="img/26115.jpg" width="50" height="50"></a>   target=“_blank”-->
+
+                                <!--<a href="{{post[1]}}" target="_blank" > <span class="pull-right label label-info inline m-t-15" ">查看源文</span></a>-->
+                                <a href="{{post[1]}}" onclick="func_insert2(this)" oid="{{post[0]}}" url="{{post[1]}}" title="{{post[2]}}" dadatate="{{post[3]}}" data-value="" target="fname">
+                                    <span class="pull-right label label-info inline m-t-15">查看源文</span>
+                                </a>
+                                <!--<a href="{{post[1]}}" onclick="func_insert(this)" target="Content"> <span class="pull-right label label-info inline m-t-15">查看源文</span></a>-->
+                                <a style="cursor:pointer;" onclick="func_insert(this)" oid="{{post[0]}}" url="{{post[1]}}" title="{{post[2]}}" dadatate="{{post[3]}}" data-value="{{post[4].replace('functhin','')}}">
+                                    <span> {{posts.index(post)+1}} </span>{{post[2]}}
+                                </a>
+                            </li>
+
+
+
+                        {% endfor %}
+                        <!--<li class="list-group-item">-->
+                            <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg" width="50" height="50"></a>&ndash;&gt;-->
+                            	<!--<span class="pull-right label label-danger inline m-t-15">人员</span>-->
+                            <!--<a href="">这里是新闻1</a>-->
+                        <!--</li>-->
+                        <!--<li class="list-group-item">-->
+                            <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                            	<!--<span class="pull-right label label-info inline m-t-15">数量</span>-->
+                            <!--<a href="">这里是新闻2</a>-->
+                        <!--</li>-->
+                        <!--<li class="list-group-item">-->
+                            <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                            	<!--<span class="pull-right label label-warning inline m-t-15">标题</span>-->
+                            <!--<a href="">这里是新闻3</a>-->
+                        <!--</li>-->
+                        <!--<li class="list-group-item">-->
+                            <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                            	<!--<span class="pull-right label label-warning inline m-t-15">消息</span>-->
+                            <!--<a href="">这里是新闻4</a>-->
+                        <!--</li>-->
+                        <!--<li class="list-group-item">-->
+                            <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                            	<!--<span class="pull-right label label-success inline m-t-15">描述</span>-->
+                            <!--<a href="">这里是新闻5</a>-->
+                        <!--</li>-->
+                    </ul>
+                    <!--新闻题目栏-->
+                    <!--分页开始-->
+	                <div class="panel-footer bg-white" style="border: 1px solid #edf1f2;margin-bottom : 80px;">
+	                    <div class="text-center">
+                            <form role="form">
+	                       <ul class="pagination">
+
+                               <li><a href="{{uppage}}">«</a></li>
+                               {%for p in pagelist%}
+
+                                    {% if p[0]==page %}
+	                                    <li class="active"><a href="{{p[1]}}">{{p[0]}}</a></li>
+
+                                    {%else%}
+                                        <li><a href="{{p[1]}}">{{p[0]}}</a></li>
+	                           <!--<li><a href="#">2</a></li>-->
+	                           <!--<li><a href="#">3</a></li>-->
+	                           <!--<li><a href="#">4</a></li>-->
+	                           <!--<li><a href="{{ url_for('crawlers.news') }}?page=5">5</a></li>-->
+	                           <!--<li><a href="#">6</a></li>-->
+	                           <!--<li><a href="#">7</a></li>-->
+	                           <!--<li><a href="#">8</a></li>-->
+                                    {%endif%}
+
+                               {%endfor%}
+                               <li><a href="{{nextpage}}">»</a></li>
+
+
+                                   <li style="float: right;"><a href="">共{{rowcount}}页</a></li>
+                                   <li style="float: right;"><button type="submit" class="btn btn-info" style="margin: auto;">跳转</button></li>
+                                   <li style="float: right;">
+                                       <a >
+                                           <input id="pagecontent" type="txt" name="page" style='width: 50px;height: 20px;'>
+                                           <!--<input id="pagecontent" type="txt" name="page" style='width: 50px;height: 20px;font-size: 8px;'>-->
+                                       </a>
+                                   </li>
+
+	                       </ul>
+                        </form>
+	                    </div>
+	                </div>
+
+
+                </div>
+        	</div>
+
+            <!--总标题部分-->
+            <div style="float: left;height:auto;background-color: #fff;width: 77%;border: 1px solid #edf1f2; text-align:center;" id="">
+            <h4 id="msgtitle">
+                    {{title}}
+                </h4>
+            </div>
+            <!--总标题部分结束-->
+            <!--新闻内容显示-->
+
+        	<div id="msgContent" style="float: left;height:90%;background-color: #fff;width: 54%;border-left: 1px solid #edf1f2; ">
+                <!--<h4 id="msgtitle">-->
+                    <!--{{title}}-->
+                <!--</h4>-->
+                <br/>
+                <div id="Content" name="Content" style="overflow:auto;" >
+
+                </div>
+                <div id="Content_f" style="overflow:auto;">
+                    <iframe name="fname" width="100%" height="1000" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes">
+                    </iframe>
+                </div>
+
+
+        		<!--<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 0px; padding: 0px; font-size: 14px; line-height: 25.2px; text-indent: 2em; text-align: center; color: rgb(68, 68, 68); white-space: normal; background-color: rgb(255, 255, 255); font-family: Verdana, Arial, Helvetica, sans-serif, 宋体;">-->
+        			<!--&lt;!&ndash;<img src="http://www.acla.org.cn/upload/media/2017-04-13/7d5c81f1b8198e29470bdddb8e7cc2d7.jpg" title="师安宁300.jpg" alt="师安宁300.jpg">&ndash;&gt;-->
+        		<!--</p>-->
+        		<!--<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 0px; padding: 0px; font-size: 14px; line-height: 25.2px; text-indent: 2em; color: rgb(68, 68, 68); white-space: normal; background-color: rgb(255, 255, 255); font-family: Verdana, Arial, Helvetica, sans-serif, 宋体;">-->
+        			<!--<span style="box-sizing: border-box; font-weight: 700;">-->
+	        			<!--<span style="box-sizing: border-box; margin: 0px; padding: 0px; font-style: inherit; font-weight: inherit; font-size: 18px; text-indent: 2em;">-->
+	        				<!--作者：师安宁，北京大成律师事务所高级合伙人、法学博士，最高人民法院《人民法院报》特约法治评论员，中华全国律师协会民事专业委员会委员，国土资源部《中国不动产》专家委员会委员&nbsp;&nbsp;-->
+	        			<!--</span>-->
+        			<!--</span>-->
+        		<!--</p>-->
+        	</div>
+            <!--评分-->
+        	<div style="float: left;height:90%;background-color: #fff;width: 23%;border: 1px solid #edf1f2;">
+        		 <form role="form" id="form_select" method="post">
+                     <div class="row">
+                          <div class="col-lg-12">
+                              <section class="panel" >
+                                  <div class="panel-body">
+
+                                          <div class="form-group">
+                                              <label class="checkbox-inline" id="newsidlable">
+
+                                              </label>
+                                              <h4 >是否属于环境新闻</h4>
+                                          </div>
+                                          <div class="form-group">
+                                              <!--<label class="col-sm-2 control-label col-lg-2" for="inputSuccess">多选</label>-->
+                                              <div class="col-lg-10">
+                                                  <label class="checkbox-inline">
+                                                      <input type="radio" id="inlineCheckbox1" name="hege" value="true"> 属于
+                                                  </label>
+                                                  <label class="checkbox-inline">
+                                                      <input type="radio" id="inlineCheckbox2" name="hege" value="false"> 不属于
+                                                  </label>
+                                                  <!--<label class="checkbox-inline">-->
+                                                      <!--<input type="checkbox" id="inlineCheckbox3" value="option3"> 选项3-->
+                                                  <!--</label>-->
+                                              </div>
+                                          </div>
+
+                                  </div>
+                              </section>
+                          </div>
+                          <div class="col-lg-12">
+                                <section class="panel" >
+                                      <header class="panel-heading">
+                                            <label >类型</label>
+                                      </header>
+                                      <!--<div class="panel-body" style="padding-left: 20px;padding-left: 30px;">-->
+                                      <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="wuran" value="1"> 污染
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="fengxian" value="1"> 风险
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="shengtai" value="1"> 生态
+                                          </label>
+                                      </div>
+                                      <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="ziyuan" value="1"> 资源
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="xuanjiao" value="1"> 宣教
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="guanli" value="1"> 管理
+                                          </label>
+                                      </div>
+                                </section>
+                                <section class="panel" >
+                                      <header class="panel-heading">
+                                            <label >要素</label>
+                                      </header>
+                                      <!--<div class="panel-body" style="padding-left: 20px;padding-left: 30px;">-->
+                                      <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="shuihj_2" value="1"> 水环境
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="kongqi_2" value="1"> 空气
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="shenghj_2" value="1"> 声环境
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="haiyang_2" value="1"> 海洋
+                                          </label>
+                                      </div>
+                                      <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="turang_2" value="1"> 土壤
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="feiwu_2" value="1"> 废物
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="shengwu_2" value="1"> 生物
+                                          </label>
+                                          <label class="checkbox-inline">
+                                              <input type="checkbox" name="other_2" value="1"> 其他
+                                          </label>
+                                      </div>
+                                </section>
+                          </div>
+                          <div class="col-lg-12">
+                                <section class="panel" >
+                                      <header class="panel-heading">
+                                            <label>打分</label>
+                                      </header>
+                                      <div class="panel-body">
+                                          <div class="form-group">
+                                              <div class="col-lg-12">
+                                                  <div class="radio-inline">
+                                                      <label>
+                                                          <input type="radio" name="score" id="f3" value="-3" >
+                                                          -3分
+                                                      </label>
+                                                  </div>
+                                                  <div class="radio-inline">
+                                                      <label>
+                                                          <input type="radio" name="score" id="f1" value="-1">
+                                                          -1分
+                                                      </label>
+                                                  </div>
+                                                  <div class="radio-inline">
+                                                      <label>
+                                                          <input type="radio" name="score" id="zero" value="0">
+                                                          0分
+                                                      </label>
+                                                  </div>
+                                                  <div class="radio-inline">
+                                                      <label>
+                                                          <input type="radio" name="score" id="z1" value="1">
+                                                          +1分
+                                                      </label>
+                                                  </div>
+                                                  <div class="radio-inline">
+                                                      <label>
+                                                          <input type="radio" name="score" id="z3" value="3">
+                                                          +3分
+                                                      </label>
+                                                  </div>
+
+
+                                              </div>
+                                          </div>
+
+                                      </div>
+                                </section>
+                              <button type="submit" class="btn btn-info" style="margin: auto;">提交</button>
+
+                              <div id="prompt_info">
+                                  {%if prompt_info!='false' %}
+                                            <font size="2" face="arial" color="red">{{prompt_info}}</font>
+                                        <!--&lt;!&ndash;<script>&ndash;&gt;-->
+    <!--//                                        function load () {-->
+    <!--//                                            setInterval('load()',5000);-->
+    <!--//                                            i++;-->
+    <!--//                                            document.getElementById("prompt_info").style = "display: none";-->
+    <!--//                                        }-->
+                                        <!--</script>-->
+                                  {%endif%}
+                              </div>
+
+
+
+                          </div>
+
+                     </div>
+                </form>
+        	</div>
+
+</section>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+

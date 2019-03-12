@@ -1,0 +1,41 @@
+{% extends "news_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}   <!--渲染表单-->
+
+
+{% block title %}注册新用户{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    <!--渲染Flask消息  提示session中的名字和新输入的名字不一样-->
+    {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+      </div>
+    {% endfor %}
+    <!--渲染Flask消息结束 -->
+
+
+
+    {% block page_content %}
+    <div class="page-header">
+
+          <h1>注册新用户</h1>
+
+        <div class="col-md-4">
+          {{ wtf.quick_form(form) }}
+        </div>
+
+
+
+    </div>
+    {% endblock %}
+</div>
+{% endblock %}
+
+
+
+
+

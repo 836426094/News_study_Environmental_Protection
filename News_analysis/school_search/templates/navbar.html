@@ -1,0 +1,70 @@
+
+<div class="navbar navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">云南师范大学
+          <!--<img class="img-rounded profile-thumbnail"  style="width: 40px; height: 40px;"  src="{{ url_for('static', filename = 'img/logo00.jpg') }}">-->
+          <!--<img class="img-circle" data-src="holder.js/30x30" alt="30x30"-->
+                             <!--style="width: 30px; height: 30px;" src="{{ url_for('static', filename = 'img/logo00.jpg') }}">-->
+          </a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li ><a href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+
+        <!--<li><a href="{{ url_for('index') }}">论坛</a></li>-->
+
+        <!--<li class="dropdown">-->
+              <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">数据分析<span class="caret"></span></a>-->
+              <!--<ul class="dropdown-menu" role="menu">-->
+                <!--<li><a href="#">Action</a></li>-->
+                <!--<li><a href="#">Another action</a></li>-->
+                <!--<li class="divider"></li>-->
+                <!--<li class="dropdown-header">Nav header</li>-->
+                <!--<li><a href="#">Separated link</a></li>-->
+              <!--</ul>-->
+        <!--</li>-->
+
+      </ul>
+
+      <!--登入退出-->
+      <ul class="nav navbar-nav navbar-right">
+
+            <!--<li class="dropdown">-->
+            <!--{% if 1 %}-->
+
+                    <!--{% if 1 %}-->
+                    <!--<a href="#" class="avatar" style="padding-top: 8px;" data-toggle="dropdown">-->
+                        <!--<img class="img-circle" data-src="holder.js/30x30" alt="30x30"-->
+                             <!--style="width: 30px; height: 30px;" src="#">-->
+                        <!--<b class="caret"></b>-->
+                    <!--</a>&lt;!&ndash;可在此设置登入图片&ndash;&gt;-->
+
+                    <!--{%else%}-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">登入<b class="caret"></b></a>&lt;!&ndash;可在此设置登入图片&ndash;&gt;-->
+                    <!--{%endif%}-->
+                    <!--<ul class="dropdown-menu">-->
+                        <!--<li>-->
+                            <!--<span class="glyphicon glyphicon-cog"></span> 用户配置-->
+                          <!--</a>-->
+                        <!--</li>-->
+                        <!--<li><a href="#}">更改密码</a></li>-->
+
+                    <!--</ul>-->
+            <!--</li>  &lt;!&ndash;Sign Out&ndash;&gt;-->
+          <!--{% else %}-->
+            <!--<li><a href="{{ url_for('index') }}">登入</a></li>  &lt;!&ndash;Sign In&ndash;&gt;-->
+          <!--{% endif %}-->
+      </ul>
+      <!--登入退出 结束-->
+
+    </div>
+  </div>
+</div>
+

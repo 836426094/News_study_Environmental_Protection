@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>
+            RunJS 演示代码
+        </title>
+        <style>
+            *{
+                margin:0;
+                padding:0;
+            }
+
+            .wrap{
+                margin:auto;
+                width:800px;
+                font: bolder 16px 'Comic Sans MS' '新宋体';
+            }
+
+            .wrap [name=sp]{
+                border: 1px solid black;
+                width: 200px;
+                height: 50px;
+                text-align:center;
+                line-height:50px;
+                margin:10px;
+            }
+
+            .wrap [name=sp]:hover{
+                background-color:#fd3;
+                cursor:pointer;
+            }
+
+            .wrap .shu{
+                width:0px;
+                height: 311px;
+                border: 1px solid black;
+                margin: -121px auto auto 231px;
+            }
+
+            .wrap table {
+                margin: -311px auto auto 291px;
+                border:1px solid black;
+                border-collapse:collapse;
+                width: 300px;
+            }
+
+            .wrap table th {
+                background-color: gray;
+                color:white;
+            }
+
+            .wrap table th, td{
+                border:1px solid black;
+                text-align:center;
+            }
+        </style>
+        <script>
+            var info = [["商品1",50],["商品2",100]];
+            onload = function(){
+                var tbody = table.tBodies[0];
+                var sps = document.getElementsByName("sp");
+                var fun = function(i){
+                    sps[i].onclick = function () {
+                        for(var k = 0; k < tbody.rows.length; k++){
+                            var r = tbody.rows[k];
+                            var tds = r.cells;
+                            for(var j = 0; j <tds.length;j++){
+                                if(tds[j].innerHTML.indexOf(info[i][0])!=-1){
+                                    tbody.deleteRow(r.rowIndex);
+                                    break;
+                                }
+                            }
+                        }
+                        var tr = tbody.insertRow(tbody.rows.length - 1);
+                        var io = info[i];
+                        for(var j = 0; j < 4; j++){
+                            var td = tr.insertCell(tr.cells.length);
+                            if(j==2){
+                                !io[j] ? io[j] = 1 : io[j]++;
+                            }else if(j==3){
+                                !io[j] ? io[j] = io[1] : sum+=(io[j]+=io[1]);
+                            }
+                            td.innerHTML = io[j];
+                        }
+                        var sum=0;
+                        for(var k=0;k<info.length;k++){
+                            var ik =info[k][3];
+                            if(ik) sum+=ik;
+                        }
+                        heji.innerHTML = sum;
+                    }
+                }
+
+                for(var i = 0; i < sps.length; i++) {
+                    fun(i);
+                }
+                document.onselectstart = new Function("return false");
+            }
+        </script>
+  </head>
+    <body>
+    <div class="wrap">
+            <div name="sp">
+                商品1 ￥50
+            </div>
+            <div name="sp">
+                商品2 ￥100
+            </div>
+
+            <div class="shu">
+
+            </div>
+
+            <table id="table">
+                <tr>
+                    <th>
+                        名称
+                    </th>
+                    <th>
+                        价格
+                    </th>
+                    <th>
+                        数量
+                    </th>
+                    <th>
+                        小计
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        合计：
+                    </td>
+                    <td colspan=3 id="heji">
+                    </td>
+                </tr>
+            </table>
+        </div>
+  </body>
+</html>

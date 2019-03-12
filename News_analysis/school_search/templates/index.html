@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>校园搜索-主页</title>
+    <!--<link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">-->
+     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style media="screen">
+      .img-wrap {
+        margin: 100px auto 100px auto;
+        width: 400px
+      }
+      img {
+        width: 400px;
+      }
+      form {
+        width: 400px;
+        margin: 0 auto 0 auto;
+      }
+      .input-group .form-control {
+        display: inline-block;
+        width: 320px;
+        margin-right: 26px;
+      }
+    </style>
+</head>
+
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="img-wrap">
+      <img src="static/img/yunnan.png" alt="">
+    </div>
+    <div>
+        <span style="position:fixed;top:150px;left:420px">校内搜索</span>
+    </div>
+
+
+    <form>
+        <div class="input-group" style="width: 100%">
+            <input type="text" class="form-control" placeholder="关键字" name="query">
+            <input type="submit" class="btn btn-primary" value="搜索">
+        </div>
+    </form>
+</body>
+
+</html>

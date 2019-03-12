@@ -1,0 +1,113 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}查一查{% endblock %}
+
+ {% block scripts %}
+        {{ super() }}
+        {{ pagedown.include_pagedown() }}
+
+
+
+ {% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <div class="page-header">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <h3><strong>查一查结果</strong></h3>
+
+        <ul id="category_tabs" class="nav nav-tabs">
+		  <li class="active"><a href="#" data-category="">全部</a></li>
+		  <li><a href="#" data-category="名站">名站</a></li>
+		  <li><a href="#" data-category="购物">购物</a></li>
+		  <li><a href="#" data-category="社交">社交</a></li>
+		  <li><a href="#" data-category="生活">生活</a></li>
+		  <li><a href="#" data-category="资讯">资讯</a></li>
+		  <li><a href="#" data-category="社区">社区</a></li>
+		  <li><a href="#" data-category="娱乐">娱乐</a></li>
+		  <li><a href="#" data-category="旅行">旅行</a></li>
+		  <li><a href="#" data-category="游戏">游戏</a></li>
+		  <li><a href="#" data-category="工具">工具</a></li>
+		  <li><a href="#" data-category="教育">教育</a></li>
+		  <li><a href="#" data-category="行业">行业</a></li>
+		  <li><a href="#" data-category="其它" data-title="774213166@qq.com  注册过的其它网站">其它</a></li>
+        </ul>
+        <div class="span4 column ui-sortable">
+                      <table class="table" >
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>站点</th>
+                                    <th>站点简介</th>
+                                    <th>找回</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for info in data %}
+                                {% if data.index(info)%2==0 %}
+                                <tr class="error">  <!--class="success"-->
+                                    {% else%}
+                                    <tr class="warning">
+                                    {% endif %}
+                                    <td>{{info[0]}}</td>
+                                    <td><strong>{{info[1]}}</strong></td>
+                                    <td>{{info[2]}}</td>
+                                    <td>
+                                        <a href="{{info[3]}}" ><div>找回</div></a>
+                                    </td>
+
+
+                                </tr>
+                            {% endfor %}
+
+
+                                <tr>
+                                    <td>1</td>
+                                    <td>TB - Monthly</td>
+                                    <td>01/04/2012</td>
+                                    <td>Default</td>
+                                </tr>
+                                <tr class="success">
+                                    <td>1</td>
+                                    <td>TB - Monthly</td>
+                                    <td>01/04/2012</td>
+                                    <td>Approved</td>
+                                </tr>
+                                <tr class="error">
+                                    <td>2</td>
+                                    <td>TB - Monthly</td>
+                                    <td>02/04/2012</td>
+                                    <td>Declined</td>
+                                </tr>
+                                <tr class="warning">
+                                    <td>3</td>
+                                    <td>TB - Monthly</td>
+                                    <td>03/04/2012</td>
+                                    <td>Pending</td>
+                                </tr>
+                                <tr class="info">
+                                    <td>4</td>
+                                    <td>TB - Monthly</td>
+                                    <td>04/04/2012</td>
+                                    <td>Call in to confirm</td>
+                                <!--</tr>-->
+                            </tbody>
+                        </table>
+                  </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+
+

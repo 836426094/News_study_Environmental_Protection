@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <title>网站统计</title>
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+    <style media="screen">
+      .wrap {
+        width: 800px;
+        text-align: center;
+        margin: 100px auto;
+      }
+      .form-control {
+        width: 80%;
+        display: inline-block;
+      }
+      .btn {
+        transform: translateY(-2px);
+        margin-left: 20px;
+      }
+      .bg-success {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 6px;
+        color: green;
+        font-weight: bold;
+      }
+
+      /*.jindutiao{*/
+        /*background-color: rgb(247, 247, 247);*/
+        /*background-image: linear-gradient(rgb(245, 245, 245), rgb(249, 249, 249));*/
+        /*background-repeat: repeat-x;*/
+        /*border-bottom-left-radius: 4px;*/
+        /*border-bottom-right-radius: 4px;*/
+        /*border-top-left-radius: 4px;*/
+        /*border-top-right-radius: 4px;*/
+        /*box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 2px 0px inset;*/
+        /*color: rgb(51, 51, 51);*/
+        /*cursor: auto;*/
+        /*display: block;*/
+        /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+        /*font-size: 14px;*/
+        /*height: 20px;*/
+        /*line-height: 20px;*/
+        /*margin-bottom: 20px;*/
+        /*overflow-x: hidden;*/
+        /*overflow-y: hidden;*/
+        /*width: 364.688px;*/
+        /*word-wrap: break-word;*/
+      /*}*/
+    </style>
+  </head>
+  <body>
+
+  {% include 'navbaradmin.html' %}
+
+    <main class="wrap"/>
+
+
+       <div id="container" style="height: 500px"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom);
+            var ss={{ Vststime }};
+            var arr=[];
+            for(var i=0;i<ss.length;i++){
+                s = ss[i].toFixed(2) ;
+                arr.push(s);
+            }
+            console.log(arr);
+            var app = {};
+            option = null;
+            option = {
+                title: {
+                    text: '网站访问量走势图',
+                    subtext: '云南师范大学'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+//                    data:['意向','预购','成交']
+                    data:['浏览量']
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {show: true, type: ['stack', 'tiled']},
+                        saveAsImage: {show: true}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+//                    data: ['周一','周二','周三','周四','周五','周六','周日']//{{ Vststime}}
+                    data: arr,//['2017-05-04','2017-05-08']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '浏览量',
+                    type: 'line',
+                    smooth: true,
+//                    data: [10, 12, 21, 54, 260, 830, 710]
+                    data: {{ Vstscount }}
+                }
+
+                ]
+            };
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+       </script>
+
+
+      <h3 style="margin-bottom: 50px">
+        网站总访问量：{{ count }}
+      </h3>
+  <form>
+      <div class="btn-group" style="float: right;">
+          <span> <strong> {{date}} 天以内 </strong></span>
+
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                时间
+              <span class="caret"></span>
+          </button>
+
+
+        <!--<div class="input-group" style="width: 100%">-->
+            <!--<input type="text" class="form-control" placeholder="关键字" name="query">-->
+            <!--<input type="submit" class="btn btn-primary" value="搜索">-->
+            <!--<br/>-->
+            <!--<div  style="position:fixed;bottom: 0;">-->
+            <!--<input type="text" class="form-control"  placeholder="过滤" name="filterstring" >-->
+            <!---->
+            <!--</div>-->
+        <!--</div>-->
+          <ul class="dropdown-menu" role="menu">
+              <li>
+                  <!--<input type="text" class="btn btn-primary" name="date" value="3" style="display: none;" >-->
+                  <input type="submit"  name="date" value="3" >天</li>
+              <li><input type="submit"  name="date" value="5" >天</li>
+              <li><input type="submit"  name="date" value="13" >天</li>
+              <li><input type="submit"  name="date" value="21" >天</li>
+              <li><input type="submit"  name="date" value="30" >天</li>
+              <li><input type="submit"  name="date" value="90" >天</li>
+              <li><input type="submit"  name="date" value="180" >天</li>
+              <li><input type="submit"  name="date" value="270" >天</li>
+              <li><input type="submit"  name="date" value="360" >天</li>
+              <!--<li class="divider"></li>-->
+              <!--<li><a href="#">分离的链接</a></li>-->
+          </ul>
+
+      </div>
+      <input type="submit" hidden="hidden">
+  </form>
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <th style="text-align: center">关键字</th>
+            <th style="text-align: center">查询次数</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for query in querys %}
+          <tr>
+            <td>{{ query.value }}</td>
+            <td>{{ query.count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <form class="form-horizontal" role="form" action="/statistics" method="post">
+        <div class="form-group">
+          <label for="url" class="col-sm-2 control-label">种子网址</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="url" placeholder="url" value="{{ start_url }}" name="start_url">
+            <input type="submit" value="保存" class="btn btn-primary">
+          </div>
+        </div>
+    </form>
+    </div>
+  </body>
+</html>

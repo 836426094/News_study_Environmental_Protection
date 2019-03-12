@@ -1,0 +1,989 @@
+
+{% extends "news_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}查询&导出&修改{% endblock %}
+
+ {% block scripts %}
+        {{ super() }}
+
+
+ {% endblock %}
+
+
+
+
+
+{% block content %}
+
+        <style>
+
+        .lis{
+            background: red;
+            color: #fff;
+        }
+
+        div { font-size:15px;}
+        a { font-size:15px;}
+        label { font-size:15px;}
+        input { font-size:15px;}
+        span { font-size:15px;}
+        </style>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+{#        <script type="text/javascript" src="http://api.map.baidu.com/api?key=46ce9d0614bf7aefe0ba562f8cf87194&v=1.0&services=false"></script>#}
+{#            <script>#}
+{#        <script src="{{ url_for('static',filename='localding_scripts/index.js') }}">#}
+        <script type="text/javascript" src="{{ url_for('static',filename='localding_scripts/index.js') }}">
+
+        </script>
+        <script type="text/javascript" src="{{ url_for('static',filename='js/npm.js') }}">
+        </script>
+        <script type="text/javascript" src="{{ url_for('static',filename='localding_scripts/echarts.min.js') }}">
+        </script>
+        <!--<h2>新闻分析</h2>-->
+        <!--创建地图容器元素-->
+{#        <script src="{{ url_for('static',filename='localding_scripts/index.js') }}">#}
+        <script>
+        function  func_insert(e){
+            var uid= $(e).attr("id");
+            var msgtitles=$(e).attr("msg-title");
+            var txt=$(e).attr("data-value")
+        document.getElementById("msgtitle").innerHTML = msgtitles;
+        document.getElementById("Content").innerHTML = txt;
+        document.getElementById("newsidlable").innerHTML = '<span style=" display:none;">新闻ID<input type="text" name="ID" value="'+uid+'"></span>';
+
+        };
+
+//            清空表单
+        function ClearForm() {
+//                var id=$(e).attr("id");
+            var objId = document.getElementById('form_select');
+            if (objId == undefined) {
+                return;
+            }
+            for (var i = 0; i < objId.elements.length; i++) {
+                if (objId.elements[i].type == "text") {
+                    objId.elements[i].value = "";
+                }
+                else if (objId.elements[i].type == "password") {
+                    objId.elements[i].value = "";
+                }
+                else if (objId.elements[i].type == "radio") {
+                    objId.elements[i].checked = false;
+                }
+                else if (objId.elements[i].type == "checkbox") {
+                    objId.elements[i].checked = false;
+                }
+                else if (objId.elements[i].type == "select-one") {
+                    objId.elements[i].options[0].selected = true;
+                }
+                else if (objId.elements[i].type == "select-multiple") {
+                    for (var j = 0; j < objId.elements[i].options.length; j++) {
+                        objId.elements[i].options[j].selected = false;
+                    }
+                }
+                else if (objId.elements[i].type == "textarea") {
+                    objId.elements[i].value = "";
+                }
+                //else if (objId.elements[i].type == "file") {
+                // //objId.elements[i].select();
+                // //document.selection.clear();
+                // // for IE, Opera, Safari, Chrome
+                // var file = objId.elements[i];
+                // if (file.outerHTML) {
+                // file.outerHTML = file.outerHTML;
+                // } else {
+                // file.value = ""; // FF(包括3.5)
+                // }
+                //}
+            }
+        };
+//            清空表单结束  { color:#F00; background-color:#666;display: block;}
+        //改变标签样式
+        function css_chenge(e){
+            var uid= $(e).attr("id");
+{#            alert(uid);#}
+            var cns = document.getElementById("new_title_list").getElementsByTagName("li");
+
+
+            for(var i = 0;i<cns.length;i++)
+            {
+                var idss=cns[i].id;
+                if (idss==uid){
+{#                    e.style="color:#F0000; background-color:#6666;display: block;";#}
+                    cns[i].style="color:#red; background-color:#6666;display: block;";
+
+                }
+                else{
+                    cns[i].style="color:#F0000;display: block;";
+                }
+
+            }
+
+
+            var divs = document.getElementsByName("update_div");
+            for(var i = 0;i<cns.length;i++)
+            {
+                var divid2=divs[i].id;
+{#                alert(divid2);#}
+                if (divid2==uid){
+{#                    e.style="color:#F0000; background-color:#6666;display: block;";#}
+                    divs[i].style="float: left;height:100%;background-color: #fff;width: 30%;border-left: 1px solid #edf1f2;";
+{#                    alert(divid2);#}
+                }
+                else{
+{#                    divs[i].style="color:#F0000;display: none;";#}
+                    divs[i].style="display: none;float: left;height:100%;background-color: #fff;width: 30%;border-left: 1px solid #edf1f2;";
+                };
+
+            };
+
+        }
+
+    </script>
+
+
+
+<section  style="padding: 0px;position: relative;height:100%;width:90%; margin: 0 auto;">
+
+
+            <form role="form" id="form_select" method="post">
+                <!--评分-->
+                <div style="float: left;height:100%;background-color: #fff;width: 27%;border-left: 1px solid #edf1f2;">
+
+                         <div class="row">
+                              <div class="col-lg-12">
+                                  <section class="panel" >
+                                      <div class="panel-body">
+
+                                              <div class="form-group">
+                                                  <h4><strong>按条件查询已标记新闻</strong></h4>
+                                                  <label class="checkbox-inline" id="newsidlable">
+
+                                                  </label>
+                                                  <label >是否属于环境新闻</label>
+                                              </div>
+                                              <div class="form-group">
+                                                  <!--<label class="col-sm-2 control-label col-lg-2" for="inputSuccess">多选</label>-->
+                                                  <div class="col-lg-10">
+                                                      {%if formdata_return.get('hege')=='1' %}
+                                                          <label class="checkbox-inline">
+                                                              <input type="radio" name="hege" checked="true" value="1"> 属于
+                                                          </label>
+                                                          <label class="checkbox-inline">
+                                                                  <input type="radio" name="hege"  value="1"> 不属于
+                                                          </label>
+                                                      {%elif formdata_return.get('hege')=='0'%}
+                                                         <label class="checkbox-inline">
+                                                              <input type="radio" name="hege"  value="1"> 属于
+                                                          </label>
+                                                          <label class="checkbox-inline">
+                                                                  <input type="radio" name="hege" checked="true" value="1"> 不属于
+                                                          </label>
+                                                      {%else%}
+                                                         <label class="checkbox-inline">
+                                                              <input type="radio" name="hege"  value="1"> 属于
+                                                          </label>
+                                                          <label class="checkbox-inline">
+                                                                  <input type="radio" name="hege"  value="1"> 不属于
+                                                          </label>
+                                                      {%endif%}
+                                                      <!--<label class="checkbox-inline">-->
+                                                          <!--<input type="radio" id="inlineCheckbox1" name="hege" value="true"> 属于-->
+                                                      <!--</label>-->
+                                                      <!--<label class="checkbox-inline">-->
+                                                          <!--<input type="radio" id="inlineCheckbox2" name="hege" value="false"> 不属于-->
+                                                      <!--</label>-->
+                                                      <!--<label class="checkbox-inline">-->
+                                                          <!--<input type="checkbox" id="inlineCheckbox3" value="option3"> 选项3-->
+                                                      <!--</label>-->
+                                                  </div>
+                                              </div>
+
+                                      </div>
+                                  </section>
+                              </div>
+                              <div class="col-lg-12">
+                                    <section class="panel" >
+                                          <header class="panel-heading">
+                                                <label >类型</label>
+                                          </header>
+                                          <!--<div class="panel-body" style="padding-left: 20px;padding-left: 30px;">-->
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+
+                                              {%if formdata_return.get('wuran')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="wuran" checked="true" value="1"> 污染
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="wuran"  value="1"> 污染
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('fengxian')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="fengxian" checked="true" value="1"> 风险
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="fengxian"  value="1"> 风险
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('shengtai')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengtai" checked="true" value="1"> 生态
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengtai"  value="1"> 生态
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="fengxian" value="1"> 风险-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shengtai" value="1"> 生态-->
+                                              <!--</label>-->
+                                          </div>
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                              {%if formdata_return.get('ziyuan')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="ziyuan" checked="true" value="1"> 资源
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="ziyuan"  value="1"> 资源
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('xuanjiao')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="xuanjiao" checked="true" value="1"> 宣教
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="xuanjiao"  value="1"> 宣教
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('guanli')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="guanli" checked="true" value="1"> 管理
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="guanli"  value="1"> 管理
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="ziyuan" value="1"> 资源-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="xuanjiao" value="1"> 宣教-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="guanli" value="1"> 管理-->
+                                              <!--</label>-->
+                                          </div>
+                                    </section>
+                                    <section class="panel" >
+                                          <header class="panel-heading">
+                                                <label >要素</label>
+                                          </header>
+                                          <!--<div class="panel-body" style="padding-left: 20px;padding-left: 30px;">-->
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                              {%if formdata_return.get('shuihj_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shuihj_2" checked="true" value="1"> 水环境
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shuihj_2"  value="1"> 水环境
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('kongqi_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="kongqi_2" checked="true" value="1"> 空气
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="kongqi_2"  value="1"> 空气
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('shenghj_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shenghj_2" checked="true" value="1"> 声环境
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shenghj_2"  value="1"> 声环境
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('haiyang_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="haiyang_2" checked="true" value="1"> 海洋
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="haiyang_2"  value="1"> 海洋
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shuihj_2" value="1"> 水环境-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="kongqi_2" value="1"> 空气-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shenghj_2" value="1"> 声环境-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="haiyang_2" value="1"> 海洋-->
+                                              <!--</label>-->
+                                          </div>
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+
+                                              {%if formdata_return.get('turang_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="turang_2" checked="true" value="1"> 土壤
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="turang_2"  value="1"> 土壤
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('feiwu_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="feiwu_2" checked="true" value="1"> 废物
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="feiwu_2"  value="1"> 废物
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('shengwu_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengwu_2" checked="true" value="1"> 生物
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengwu_2"  value="1"> 生物
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return.get('other_2')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="other_2" checked="true" value="1"> 其他
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="other_2"  value="1"> 其他
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="turang_2" value="1"> 土壤-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="feiwu_2" value="1"> 废物-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shengwu_2" value="1"> 生物-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="other_2" value="1"> 其他-->
+                                              <!--</label>-->
+                                          </div>
+                                    </section>
+                              </div>
+                              <div class="col-lg-12">
+                                    <section class="panel" >
+                                          <header class="panel-heading">
+                                                <label>打分</label>
+                                          </header>
+                                          <div class="panel-body">
+                                              <div class="form-group">
+                                                  <div class="col-lg-12">
+
+                                                      {%for fenshu in ['-3','-1','0','1','3']%}
+                                                          {%if formdata_return.get('score')==fenshu %}
+                                                                <div class="checkbox-inline">
+                                                                    <label>
+                                                                        <input type="radio" name="score" checked="true" value="{{fenshu}}" >
+                                                                        {{fenshu}}分
+                                                                    </label>
+                                                               </div>
+                                                          {%else%}
+                                                                <div class="checkbox-inline">
+                                                                      <label>
+                                                                          <input type="radio" name="score"  value="{{fenshu}}" >
+                                                                          {{fenshu}}分
+                                                                      </label>
+                                                                </div>
+                                                          {%endif%}
+
+                                                      {%endfor%}
+
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="f3" value="-3" >-->
+                                                              <!-- -3分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="f1" value="-1">-->
+                                                              <!-- -1分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="zero" value="0">-->
+                                                              <!--0分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="z1" value="1">-->
+                                                              <!--+1分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="z3" value="3">-->
+                                                              <!--+3分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+
+
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                    </section>
+
+                                  <button type="submit" class="btn btn-info" style="margin: auto;float: right">查询</button>
+                                  <button type="reset" onclick="ClearForm()" class="btn btn-info" style="margin: auto;float: right">清空</button>
+                              </div>
+
+                         </div>
+
+                </div>
+                <!--评分结束-->
+
+
+                <!--新闻标题栏-->
+                <div id="new_title_list" style="padding: 1px;float: left;height:100%;width: 40%; background-color: #fff;">
+                    <div class="panel" style="padding: 1px;height: 100%;margin-bottom:0px;">
+                        <!--标题-->
+                        <header class="panel-heading">
+                        <!--<header class="panel">-->
+
+                            <h3>新闻栏目标题
+
+                                <!--<div style="float: right;width: 50%">-->
+                                    <!--<form role="form" style="float: right" method="post">-->
+                                        <!--{%for k in formdata_return%}-->
+                                            <!--<input type="radio" style="display: none" name="{{k}}" value="{{formdata_return[k]}}" >-->
+
+                                        <!--{%endfor%}-->
+                                        <span style="float: right">
+                                        <input type="radio" name="export" value="nowpage" >当前页
+                                        <input type="radio" name="export" value="all" >全部
+                                        <button class="btn btn-warning" type="submit">导出</button>
+                                        </span>
+                                    <!--</form>-->
+                                </h3>
+                            {#            更新提示信息开始#}
+                                         <div id="prompt_info">
+                                          {%if prompt_info!='0' %}
+                                              <font size="2" face="arial" color="red">{{prompt_info}}</font>
+                                              <script type="text/javascript">
+                                                  alert({{prompt_info}});
+                                              </script>
+                                                <!--&lt;!&ndash;<script>&ndash;&gt;-->
+                            <!--//                                        function load () {-->
+                            <!--//                                            setInterval('load()',5000);-->
+                            <!--//                                            i++;-->
+                            <!--//                                            document.getElementById("prompt_info").style = "display: none";-->
+                            <!--//                                        }-->
+                                                <!--</script>-->
+                                              {%endif%}
+                                          </div>
+                            {#            更新提示信息结束#}
+
+
+
+                        </header>
+                        <!--新闻题目栏-->
+                        <ul class="list-group teammates">
+                            {% for post in posts %}
+
+                                <li id="{{ post[0] }}" onclick="css_chenge(this)" class="list-group-item">
+                                    <!--<a href=""><img src="img/26115.jpg" width="50" height="50"></a>   target=“_blank”-->
+
+                                    <!--<a href="{{post[1]}}" target="_blank" > <span class="pull-right label label-info inline m-t-15" ">查看源文</span></a>-->
+                                    <a href="{{post[1]}}" target="Content"> <span class="pull-right label label-info inline m-t-15" > 查看源文</span></a>
+                                    <a href="{{post[1]}}" target="Content"> <span class="pull-right label label-primary      inline m-t-15" >{{post[3]}}  </span></a>
+                                    <a style="cursor:pointer;" id="{{post[0]}}" msg-title="{{post[2]}}" data-value="{{post[4]}}">
+                                        <span> {{posts.index(post)+1}} </span>{{post[2]}}
+                                    </a>
+                                </li>
+
+                            {% endfor %}
+                            <!--<li class="list-group-item">-->
+                                <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg" width="50" height="50"></a>&ndash;&gt;-->
+                                    <!--<span class="pull-right label label-danger inline m-t-15">人员</span>-->
+                                <!--<a href="">这里是新闻1</a>-->
+                            <!--</li>-->
+                            <!--<li class="list-group-item">-->
+                                <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                                    <!--<span class="pull-right label label-info inline m-t-15">数量</span>-->
+                                <!--<a href="">这里是新闻2</a>-->
+                            <!--</li>-->
+                            <!--<li class="list-group-item">-->
+                                <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                                    <!--<span class="pull-right label label-warning inline m-t-15">标题</span>-->
+                                <!--<a href="">这里是新闻3</a>-->
+                            <!--</li>-->
+                            <!--<li class="list-group-item">-->
+                                <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                                    <!--<span class="pull-right label label-warning inline m-t-15">消息</span>-->
+                                <!--<a href="">这里是新闻4</a>-->
+                            <!--</li>-->
+                            <!--<li class="list-group-item">-->
+                                <!--&lt;!&ndash;<a href=""><img src="img/26115.jpg"  width="50" height="50"></a>&ndash;&gt;-->
+                                    <!--<span class="pull-right label label-success inline m-t-15">描述</span>-->
+                                <!--<a href="">这里是新闻5</a>-->
+                            <!--</li>-->
+                        </ul>
+                        <!--新闻题目栏-->
+                    </div>
+
+                </div>
+                <!--新闻标题栏-->
+            </form>
+
+
+            {% for anewsid in formdata_return2 %}
+
+                <!--评分2-->
+                <form name="update" method="post">
+
+                <div  name="update_div" id="{{ anewsid }}"  style="display: none;float: left;height:100%;background-color: #fff;width: 30%;border-left: 1px solid #edf1f2;">
+
+                         <div class="row">
+                              <div class="col-lg-12">
+                                  <section class="panel" >
+                                      <div class="panel-body">
+
+                                              <div class="form-group">
+                                                  <h4><strong>修改新闻属性</strong></h4>
+                                                  <h5><strong>{{ formdata_return2[anewsid].get('title') }}</strong></h5>
+                                                  <label class="checkbox-inline" id="newsidlable">
+                                                    <span style=" display:none;" ><input type="text" name="ID" value="{{ anewsid }}"></span>
+                                                    <span style=" display:none;" ><input type="text" name="update" value="1"></span>
+                                                  </label>
+                                                  <label >是否属于环境新闻</label>
+                                              </div>
+                                              <div class="form-group">
+                                                  <!--<label class="col-sm-2 control-label col-lg-2" for="inputSuccess">多选</label>-->
+                                                  <div class="col-lg-10" >
+                                                      {%if formdata_return2[anewsid].get('hege')=='1' %}
+                                                          <label class="checkbox-inline">
+                                                              <input type="radio" name="hege" checked="true" value="1"> 属于
+                                                          </label>
+                                                          <label class="checkbox-inline">
+                                                                  <input type="radio" name="hege"  value="1"> 不属于
+                                                          </label>
+                                                      {%elif formdata_return2[anewsid].get('hege')=='0'%}
+                                                         <label class="checkbox-inline">
+                                                              <input type="radio" name="hege"  value="1"> 属于
+                                                          </label>
+                                                          <label class="checkbox-inline">
+                                                                  <input type="radio" name="hege" checked="true" value="1"> 不属于
+                                                          </label>
+                                                      {%else%}
+                                                         <label class="checkbox-inline">
+                                                              <input type="radio" name="hege"  value="1"> 属于
+                                                          </label>
+                                                          <label class="checkbox-inline">
+                                                                  <input type="radio" name="hege"  value="1"> 不属于
+                                                          </label>
+                                                      {%endif%}
+                                                      <!--<label class="checkbox-inline">-->
+                                                          <!--<input type="radio" id="inlineCheckbox1" name="hege" value="true"> 属于-->
+                                                      <!--</label>-->
+                                                      <!--<label class="checkbox-inline">-->
+                                                          <!--<input type="radio" id="inlineCheckbox2" name="hege" value="false"> 不属于-->
+                                                      <!--</label>-->
+                                                      <!--<label class="checkbox-inline">-->
+                                                          <!--<input type="checkbox" id="inlineCheckbox3" value="option3"> 选项3-->
+                                                      <!--</label>-->
+                                                  </div>
+                                              </div>
+
+                                      </div>
+                                  </section>
+                              </div>
+                              <div class="col-lg-12">
+                                    <section class="panel" >
+                                          <header class="panel-heading">
+                                                <label >类型</label>
+                                          </header>
+                                          <!--<div class="panel-body" style="padding-left: 20px;padding-left: 30px;">-->
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+
+                                              {%if formdata_return2[anewsid].get('wuran')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="wuran" checked="true" value="1"> 污染
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="wuran"  value="1"> 污染
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('fengxian')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="fengxian" checked="true" value="1"> 风险
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="fengxian"  value="1"> 风险
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('shengtai')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengtai" checked="true" value="1"> 生态
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengtai"  value="1"> 生态
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="fengxian" value="1"> 风险-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shengtai" value="1"> 生态-->
+                                              <!--</label>-->
+                                          </div>
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                              {%if formdata_return2[anewsid].get('ziyuan')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="ziyuan" checked="true" value="1"> 资源
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="ziyuan"  value="1"> 资源
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('xuanjiao')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="xuanjiao" checked="true" value="1"> 宣教
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="xuanjiao"  value="1"> 宣教
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('guanli')=='1' %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="guanli" checked="true" value="1"> 管理
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="guanli"  value="1"> 管理
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="ziyuan" value="1"> 资源-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="xuanjiao" value="1"> 宣教-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="guanli" value="1"> 管理-->
+                                              <!--</label>-->
+                                          </div>
+                                    </section>
+                                    <section class="panel" >
+                                          <header class="panel-heading">
+                                                <label >要素</label>
+                                          </header>
+                                          <!--<div class="panel-body" style="padding-left: 20px;padding-left: 30px;">-->
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+                                              {%if formdata_return2[anewsid].get('shuihj_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shuihj_2" checked="true" value="1"> 水环境
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shuihj_2"  value="1"> 水环境
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('kongqi_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="kongqi_2" checked="true" value="1"> 空气
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="kongqi_2"  value="1"> 空气
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('shenghj_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shenghj_2" checked="true" value="1"> 声环境
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shenghj_2"  value="1"> 声环境
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('haiyang_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="haiyang_2" checked="true" value="1"> 海洋
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="haiyang_2"  value="1"> 海洋
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shuihj_2" value="1"> 水环境-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="kongqi_2" value="1"> 空气-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shenghj_2" value="1"> 声环境-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="haiyang_2" value="1"> 海洋-->
+                                              <!--</label>-->
+                                          </div>
+                                          <div class="form-group" style="padding-left: 20px;padding-left: 30px;">
+
+                                              {%if formdata_return2[anewsid].get('turang_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="turang_2" checked="true" value="1"> 土壤
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="turang_2"  value="1"> 土壤
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('feiwu_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="feiwu_2" checked="true" value="1"> 废物
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="feiwu_2"  value="1"> 废物
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('shengwu_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengwu_2" checked="true" value="1"> 生物
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="shengwu_2"  value="1"> 生物
+                                                  </label>
+                                              {%endif%}
+                                              {%if formdata_return2[anewsid].get('other_2')==1 %}
+                                                  <label class="checkbox-inline">
+                                                      <input type="checkbox" name="other_2" checked="true" value="1"> 其他
+                                                  </label>
+                                              {%else%}
+                                                    <label class="checkbox-inline">
+                                                      <input type="checkbox" name="other_2"  value="1"> 其他
+                                                  </label>
+                                              {%endif%}
+
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="turang_2" value="1"> 土壤-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="feiwu_2" value="1"> 废物-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="shengwu_2" value="1"> 生物-->
+                                              <!--</label>-->
+                                              <!--<label class="checkbox-inline">-->
+                                                  <!--<input type="checkbox" name="other_2" value="1"> 其他-->
+                                              <!--</label>-->
+                                          </div>
+                                    </section>
+                              </div>
+                              <div class="col-lg-12">
+                                    <section class="panel" >
+                                          <header class="panel-heading">
+                                                <label>打分</label>
+                                          </header>
+                                          <div class="panel-body">
+                                              <div class="form-group">
+                                                  <div class="col-lg-12">
+
+                                                      {%for fenshu in [-3,-1,0,1,3]%}
+                                                          {%if formdata_return2[anewsid].get('score')==fenshu %}
+                                                                <div class="checkbox-inline">
+                                                                    <label>
+                                                                        <input type="radio" name="score" checked="true" value="{{fenshu}}" >
+                                                                        {{fenshu}}分
+                                                                    </label>
+                                                               </div>
+                                                          {%else%}
+                                                                <div class="checkbox-inline">
+                                                                      <label>
+                                                                          <input type="radio" name="score"  value="{{fenshu}}" >
+                                                                          {{fenshu}}分
+                                                                      </label>
+                                                                </div>
+                                                          {%endif%}
+
+                                                      {%endfor%}
+
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="f3" value="-3" >-->
+                                                              <!-- -3分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="f1" value="-1">-->
+                                                              <!-- -1分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="zero" value="0">-->
+                                                              <!--0分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="z1" value="1">-->
+                                                              <!--+1分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+                                                      <!--<div class="radio-inline">-->
+                                                          <!--<label>-->
+                                                              <!--<input type="radio" name="score" id="z3" value="3">-->
+                                                              <!--+3分-->
+                                                          <!--</label>-->
+                                                      <!--</div>-->
+
+
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                    </section>
+
+                                  <button type="reset" onclick="ClearForm()" class="btn btn-info" style="margin: auto;float: left">清空</button>
+                                  <button type="submit" class="btn btn-info" style="margin: auto;float: left">修改</button>
+
+                              </div>
+
+                         </div>
+
+                </div>
+
+            </form>
+                <!--评分2 结束-->
+
+            {% endfor %}
+
+             <!--分页-->
+                    <div style="padding: 1px;float: left;height:20%;width: 100%; background-color: #fff;">
+                        <div class="panel" style="padding: 1px;height: 100%;margin-bottom:0px;">
+
+                            <!--分页开始-->
+                            <div class="panel-footer bg-white" style="padding: 1px;margin-bottom : 80px;">
+                                <div class="text-center">
+                                <form role="form" method="get">
+                                   <ul class="pagination">
+
+                                       <li><a href="{{uppage}}">«</a></li>
+                                       {%for p in pagelist%}
+
+                                            {% if p[0]==page %}
+                                                <li class="active"><a href="{{p[1]}}">{{p[0]}}</a></li>
+
+                                            {%else%}
+                                                <li><a href="{{p[1]}}">{{p[0]}}</a></li>
+                                       <!--<li><a href="#">2</a></li>-->
+                                       <!--<li><a href="#">3</a></li>-->
+                                       <!--<li><a href="#">4</a></li>-->
+                                       <!--<li><a href="{{ url_for('crawlers.news') }}?page=5">5</a></li>-->
+                                       <!--<li><a href="#">6</a></li>-->
+                                       <!--<li><a href="#">7</a></li>-->
+                                       <!--<li><a href="#">8</a></li>-->
+                                            {%endif%}
+
+                                       {%endfor%}
+                                       <li><a href="{{nextpage}}">»</a></li>
+
+
+                                           <li style="float: right;"><a href="">共{{rowcount}}页</a></li>
+                                           <li style="float: right;"><button type="submit" class="btn btn-info" style="margin: auto;">跳转</button></li>
+                                           <li style="float: right;">
+                                               <a >
+                                                   <input id="pagecontent" type="txt" name="page"  style='width: 50px;height: 20px;'>
+                                                   <!--<input id="pagecontent" type="txt" name="page" style='width: 50px;height: 20px;font-size: 8px;'>-->
+                                               </a>
+                                           </li>
+
+                                   </ul>
+                                </form>
+                                </div>
+                            </div>
+                            <!--分页结束-->
+                        </div>
+                    </div>
+
+            <!--分页结束-->
+
+
+
+            <!--新闻内容显示-->
+        	<!--<div id="msgContent" style="float: left;height:100%;background-color: #fff;width: 20%;border-left: 1px solid #edf1f2; ">-->
+                <!--<h4 id="msgtitle"> </h4>-->
+                <!--<br/>-->
+                <!--<div id="Content"  name="Content" style="overflow:auto;" >-->
+
+                <!--</div>-->
+
+
+        		<!--&lt;!&ndash;<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 0px; padding: 0px; font-size: 14px; line-height: 25.2px; text-indent: 2em; text-align: center; color: rgb(68, 68, 68); white-space: normal; background-color: rgb(255, 255, 255); font-family: Verdana, Arial, Helvetica, sans-serif, 宋体;">&ndash;&gt;-->
+        			<!--&lt;!&ndash;&lt;!&ndash;<img src="http://www.acla.org.cn/upload/media/2017-04-13/7d5c81f1b8198e29470bdddb8e7cc2d7.jpg" title="师安宁300.jpg" alt="师安宁300.jpg">&ndash;&gt;&ndash;&gt;-->
+        		<!--&lt;!&ndash;</p>&ndash;&gt;-->
+        		<!--&lt;!&ndash;<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 0px; padding: 0px; font-size: 14px; line-height: 25.2px; text-indent: 2em; color: rgb(68, 68, 68); white-space: normal; background-color: rgb(255, 255, 255); font-family: Verdana, Arial, Helvetica, sans-serif, 宋体;">&ndash;&gt;-->
+        			<!--&lt;!&ndash;<span style="box-sizing: border-box; font-weight: 700;">&ndash;&gt;-->
+	        			<!--&lt;!&ndash;<span style="box-sizing: border-box; margin: 0px; padding: 0px; font-style: inherit; font-weight: inherit; font-size: 18px; text-indent: 2em;">&ndash;&gt;-->
+	        				<!--&lt;!&ndash;作者：师安宁，北京大成律师事务所高级合伙人、法学博士，最高人民法院《人民法院报》特约法治评论员，中华全国律师协会民事专业委员会委员，国土资源部《中国不动产》专家委员会委员&nbsp;&nbsp;&ndash;&gt;-->
+	        			<!--&lt;!&ndash;</span>&ndash;&gt;-->
+        			<!--&lt;!&ndash;</span>&ndash;&gt;-->
+        		<!--&lt;!&ndash;</p>&ndash;&gt;-->
+        	<!--</div>-->
+            <!--新闻显示结束-->
+
+
+
+</section>
+
+
+
+
+
+{% endblock %}
+
+
+
+

@@ -1,0 +1,176 @@
+
+{% extends "bootstrap/base.html" %}
+
+<!--浏览器地址栏的图标-->
+{% block head %}
+  <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
+    <meta charset="UTF-8">
+  {{ super() }}
+    <!--保留基模板中的定义的块的原始内容-->
+
+<!--网页标签logo-->
+  <link rel="shortcut icon" href="{{ url_for('static', filename = 'img/newslogo.ico') }}"
+    type="image/x-icon">
+    <script>
+    function functype_change(obj) {
+            var o = document.getElementById(obj);
+            //if判断obj对象的属性状态 class="active"
+            if(o.class == "none") {
+            //改变标签属性
+            o.class= "active";
+            } else {
+            o.class = "none"
+
+
+            }
+            }
+
+
+    </script>
+
+{% endblock %}
+<!--浏览器地址栏的图标结束-->
+
+<!--引入moment.js库-->
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang("zh-CN") }} <!--将时间显示成中文 -->
+
+{% endblock %}
+<!--引入moment.js库结束-->
+
+
+{% block title %}Flasky{% endblock %}
+
+
+
+
+<!--导航栏模块-->
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <!--<a class="navbar-brand" href="/">News Analysis-->
+      <a class="navbar-brand" href="{{ url_for('crawlers.news') }}">News Analysis
+
+
+          <!--<img class="img-rounded profile-thumbnail"  style="width: 40px; height: 40px;"  src="{{ url_for('static', filename = 'img/logo00.jpg') }}">-->
+          <!--<img class="img-circle" data-src="holder.js/30x30" alt="30x30"-->
+                             <!--style="width: 30px; height: 30px;" src="{{ url_for('static', filename = 'img/logo00.jpg') }}">-->
+          </a>
+    </div>
+
+
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav" id="nav-pills">
+        <!--<li class="active" ><a href="{{ url_for('main.index') }}"><span class="glyphicon glyphicon-home"></span>Home</a></li>-->
+        <li id="news" class="" onclick="functype_change()"><a href="{{ url_for('crawlers.news') }}"><span class="glyphicon glyphicon-home"></span>筛选&分类&评分</a></li>
+        <!--<li><a href="{{ url_for('auth.Registered_detection') }}">检测找回</a></li>-->
+        <!--<li><a href="{{ url_for('main.luntan') }}">论坛</a></li>-->
+        <li id="/crawlers/news_export" class="" onclick="functype_change()"><a href="{{ url_for('crawlers.news_export') }}">查询&导出&修改</a></li>
+        <!--<li><a href="{{ url_for('data_analysis.DataAnalysis') }}"></a></li>-->
+        <!--<li class="dropdown">-->
+              <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">数据分析<span class="caret"></span></a>-->
+              <!--<ul class="dropdown-menu" role="menu">-->
+
+                <!--<li><a href="#">Another action</a></li>-->
+                <!--<li class="divider"></li>-->
+                <!--<li class="dropdown-header">Nav header</li>-->
+                <!--<li><a href="#">Separated link</a></li>-->
+              <!--</ul>-->
+        <!--</li>-->
+        <!--管理评论链接-->
+        <!--{% if current_user.can(Permission.MODERATE_COMMENTS) %}-->
+            <!--<li><a href="{{ url_for('main.moderate') }}">管理评论</a></li>-->
+        <!--{% endif %}-->
+      </ul>
+
+      <!--登入退出-->
+      <ul class="nav navbar-nav navbar-right">
+          {% if current_user.is_authenticated %}
+
+            <li class="dropdown">
+                    {% if current_user.username %}
+
+                    <a href="#" class="avatar" style="padding-top: 8px;" data-toggle="dropdown">
+                        <img class="img-circle" data-src="holder.js/30x30" alt="30x30"
+                             style="width: 30px; height: 30px;" src="{{ current_user.gravatar(size=30)}}">
+                        {{current_user.username}}
+                        <b class="caret"></b>
+                    </a><!--可在此设置登入图片-->
+
+                    {%else%}
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">登入<b class="caret"></b></a><!--可在此设置登入图片-->
+                    {%endif%}
+                    <ul class="dropdown-menu">
+{#                        <li>#}
+{#                          <a href="{{ url_for('main.user', username=current_user.username) }}">#}
+{#                            <span class="glyphicon glyphicon-cog"></span> 用户配置#}
+{#                          </a>#}
+{#                        </li>#}
+{#                        <li><a href="{{ url_for('auth.change_password') }}">更改密码</a></li>#}
+{#                        <li><a href="{{ url_for('auth.change_email_request') }}">更换邮箱</a></li>#}
+                        <li><a href="{{ url_for('auth.logout') }}">退出</a></li>
+                    </ul>
+            </li>  <!--Sign Out-->
+          {% else %}
+            <li><a href="{{ url_for('auth.login') }}">登入</a></li>  <!--Sign In-->
+          {% endif %}
+      </ul>
+      <!--登入退出 结束-->
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+<!--导航栏模块结束-->
+
+
+<!--内容模块-->
+{% block content %}
+<div class="container">
+
+    <!--渲染Flask消息  提示session中的名字和新输入的名字不一样-->
+    {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+      </div>
+    {% endfor %}
+    <!--渲染Flask消息结束 -->
+
+    {% block page_content %}
+    {% endblock %}
+
+    <script>
+        host = window.location.host;
+        host2=document.domain;
+        //获取页面完整地址
+        url = window.location.href;
+        var nowhost=url.replace('http://'+host,'');
+        alert(nowhost);
+            if (nowhost)
+                {
+                    var o = document.getElementById(news);
+                    o.class= "active";
+
+                }
+
+            //if判断obj对象的属性状态 class="active"
+
+            else {
+                var o = document.getElementById(nowhost);
+                o.class= "active";
+            }
+    </script>
+</div>
+{% endblock %}
+
+<!--内容模块结束-->

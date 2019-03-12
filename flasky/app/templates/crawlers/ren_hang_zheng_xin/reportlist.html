@@ -1,0 +1,90 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}ip{% endblock %}
+
+ {% block scripts %}
+        {{ super() }}
+        {{ pagedown.include_pagedown() }}
+
+
+
+ {% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <div class="page-header">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <h3><strong>报告列表</strong></h3>
+        <div class="span4 column ui-sortable">
+                      <table class="table" >
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>文件名</th>
+                                    <th>采集时间</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for info in data %}
+                                <tr class="success">
+                                    <td>{{info[0]}}</td>
+                                    <td>
+                                        <a href="/crawlers/rhzx_report?report={{info[2]}}" ><div>{{info[2]}}</div></a>
+                                    </td>
+                                    <td>---</td>
+                                    <td>Approved</td>
+
+
+                                </tr>
+                            {% endfor %}
+                                <!--<tr>-->
+                                    <!--<td>1</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>01/04/2012</td>-->
+                                    <!--<td>Default</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="success">-->
+                                    <!--<td>1</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>01/04/2012</td>-->
+                                    <!--<td>Approved</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="error">-->
+                                    <!--<td>2</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>02/04/2012</td>-->
+                                    <!--<td>Declined</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="warning">-->
+                                    <!--<td>3</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>03/04/2012</td>-->
+                                    <!--<td>Pending</td>-->
+                                <!--</tr>-->
+                                <!--<tr class="info">-->
+                                    <!--<td>4</td>-->
+                                    <!--<td>TB - Monthly</td>-->
+                                    <!--<td>04/04/2012</td>-->
+                                    <!--<td>Call in to confirm</td>-->
+                                <!--</tr>-->
+                            </tbody>
+                        </table>
+                  </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+
+

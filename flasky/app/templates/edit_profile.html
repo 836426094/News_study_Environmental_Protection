@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}用户编辑{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    {% block page_content %}
+    <div class="page-header">
+        <!--渲染form表单-->
+        {{ wtf.quick_form(form) }}
+        <!--渲染form表单结束-->
+    </div>
+    {% endblock %}
+
+</div>
+{% endblock %}

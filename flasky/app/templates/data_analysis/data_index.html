@@ -1,0 +1,318 @@
+
+{% extends "base.html" %}
+
+<!--浏览器地址栏的图标-->
+{% block head %}
+  {{ super() }}<!--保留基模板中的定义的块的原始内容-->
+
+    <script src="{{ url_for('static', filename = 'echarts.min.js') }}"></script>
+
+{% endblock %}
+<!--浏览器地址栏的图标结束-->
+
+{% block title %}分析图{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    {% block page_content %}
+    <div class="page-header">
+        <!--测试登入-->
+
+        <h2>您好！
+          {% if current_user.is_authenticated %}
+        {{ current_user.username }}
+        {% else %}
+        想查看更多内容,请登入...
+        {% endif %}!
+        </h2>
+        <!--测试登入结束-->
+
+        <p>The local date and time is {{ moment(current_time).format('LLL') }}.</p>
+        <p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
+        <div id="main2" style="width: 600px;height:400px;background-color: grey;"></div>
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="container1" style="width: 600px;height:400px;background-color: grey;" ></div>
+
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main2'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '销量分析'
+                },
+                tooltip: {},
+                legend: {
+                    data:['销量']
+                },
+                xAxis: {
+                    data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                },
+                yAxis: {},
+                series: [{
+                    name: '销量',
+                    type: 'bar',
+                    data: {{xiaoliang}},//[5, 20, 36, 10, 10, 20]
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+    </script>
+        <script type="text/javascript">
+                var dom = document.getElementById("container1");
+                var myChart = echarts.init(dom);
+                var app = {};
+                option = null;
+                option = {
+                    title: {
+                    text: '推广分析'
+                },
+                    series : [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            data:[
+                                {value:235, name:'视频广告'},
+                                {value:274, name:'联盟广告'},
+                                {value:310, name:'邮件营销'},
+                                {value:335, name:'直接访问'},
+                                {value:400, name:'搜索引擎'}
+                            ]
+                        }
+                    ]
+                };;
+                if (option && typeof option === "object") {
+                    myChart.setOption(option, true);
+                }
+       </script>
+
+        <hr/>
+
+        <!-- 实现个性化设置-->
+        <div id="container2" style="width: 600px;height:400px;background-color: grey;" ></div>
+        <script type="text/javascript">
+                var dom = document.getElementById("container2");
+
+                var myChart = echarts.init(dom);
+
+                option = null;
+//                ldata='{{ldata[0]}}';
+
+                option = {
+                    title: {
+                                text: '推广分析 '
+                            },
+
+                    backgroundColor: '#2c343c',  //设置背景颜色
+                    textStyle: {    //设置文本的样式
+                                color: 'rgba(255, 255, 255, 1)'
+                            },
+
+                //也可以每个系列分别设置，每个系列的文本设置在 label.normal.textStyle。
+
+                //跟itemStyle一样，label和labelLine的样式也有normal和emphasis两个状态。
+                label: {
+                    normal: {
+                        textStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)'
+                        }
+                    }
+                },
+                //饼图的话还要将标签的视觉引导线的颜色设为浅色。
+//                labelLine: {
+//                    normal: {
+//                        lineStyle: {
+//                            color: 'rgba(255, 255, 255, 0.3)'
+//                        }
+//                    }
+//                },
+
+
+                    series : [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            roseType: 'angle',//<!--必须使用以上的饼图才行通过设置 roseType 显示成南丁格尔图。-->
+                            radius: '55%',
+                            itemStyle: {   //加上阴影效果
+                                            normal: {
+                                                // 阴影的大小
+                                                shadowBlur: 200,
+                                                // 阴影水平方向上的偏移
+                                                shadowOffsetX: 0,
+                                                // 阴影垂直方向上的偏移
+                                                shadowOffsetY: 0,
+                                                // 阴影颜色
+                                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                            },
+                                            //emphasis是鼠标 hover 时候的高亮样式。这个示例里是正常的样式下加阴影，但是可能更多的时候是 hover 的时候通过阴影突出。
+                                            emphasis: {
+                                                    shadowBlur: 200,
+                                                    shadowColor: 'rgba(255, 255, 255, 0)'
+                                                }
+                                            },
+
+
+                            data:[
+                                {   value:'{{ldata[0]}}',
+                                    name:'视频广告',
+                                    itemStyle: {
+                                        normal: {
+                                                color: 'gold'
+                                        }
+                                     }
+
+                                },
+                                {value:'{{ldata[1]}}', name:'联盟广告'},
+                                {value:'{{ldata[2]}}', name:'邮件营销'},
+                                {value:'{{ldata[3]}}', name:'直接访问',
+                                    //但是这次因为只有明暗度的变化，所以有一种更快捷的方式是通过 visualMap 组件将数值的大小映射到明暗度。
+                                    visualMap: {
+                                        // 不显示 visualMap 组件，只用于明暗度的映射
+                                        show: false,
+                                        // 映射的最小值为 80
+                                        min: 80,
+                                        // 映射的最大值为 600
+                                        max: 600,
+                                        inRange: {
+                                            // 明暗度的范围是 0 到 1
+                                            colorLightness: [0, 1]
+                                        }
+                                    },
+
+                                },
+                                {   value:'{{ldata[4]}}',
+                                    name:'搜索引擎',
+                                    itemStyle: {
+                                        normal: {
+                                                color: '#4CD10A'
+                                        }
+                                     }
+                                }
+                            ]
+                        }
+                    ]
+                };
+                if (option && typeof option == "object") {
+                    //使用刚指定的配置项和数据显示图表
+                    myChart.setOption(option, true);
+
+                }
+       </script>
+
+        <!--实现异步加载-->
+        <div id="container3" style="width: 600px;height:400px;background-color: grey;" ></div>
+        <script type="text/javascript">
+
+                var myChart = echarts.init(document.getElementById("container3"));
+                // 显示标题，图例和空的坐标轴
+                myChart.setOption({
+                    title: {
+                        text: '异步数据加载示例'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['销量']
+                    },
+                    xAxis: {
+                        data: []
+                    },
+                    yAxis: {},
+                    series: [{
+                        name: '销量',
+                        type: 'bar',
+                        data: []
+                    }]
+                });
+                data=null;
+                // 异步加载数据
+                console.log("{{ url_for('.json_data') }}");
+                $.get("{{ url_for('.json_data') }}").done(function () {
+                    // 填入数据
+                    myChart.setOption({
+                        xAxis: {
+                            data: '{{xdata}}',//data.categories
+                        },
+                        series: [{
+                            // 根据名字对应到相应的系列
+                            name: '销量',
+                            data: '{{sdata}}',//[5, 20, 36, 10, 10, 20]//data.data
+                        }]
+                    });
+                });
+
+
+
+//            var data = {
+//                "name": "test",
+//                "age", 1
+//            }
+//            $.ajax({
+//                type: 'POST',
+//                url: "{{ url_for('data_analysis.json_data') }}",///your/url/,
+//                data: JSON.stringify(data), //# 转化为字符串
+//                contentType: 'application/json; charset=UTF-8',
+//                dataType: 'json', //# 注意：这里是指希望服务端返回json格式的数据
+//                success: function(data) { //# 这里的data就是json格式的数据
+//                },
+//                error: function(xhr, type) {
+//                }
+//            });
+
+
+        </script>
+
+
+
+    </div>
+
+
+    {% endblock %}
+</div>
+
+<div>
+
+    <div style="width:100px; height:100px; border:1px solid #ccc;">
+        <a href="#">111111</a>
+    </div>
+
+    <script>
+
+    //    alert(oDiv.innerHTML);   //这样就可以获取div标签里面所有的内容。
+        var oDiv = document.getElementsByTagName('div')[0];
+//        var last=JSON.stringify(oDiv.innerHTML);
+        var last=oDiv.innerHTML;
+//        alert(oDiv.innerHTML);   //这样就可以获取div标签里面所有的内容。
+
+        function post(url, params) {
+            var tempForm = document.createElement("form");
+            tempForm.action = url;
+            tempForm.method = "post";
+            tempForm.style.display = "none";
+            for (var x in params) {
+                var opt = document.createElement("textarea");
+                opt.name = x;
+                opt.value = params[x];
+                // alert(opt.name)
+                tempForm.appendChild(opt);
+            }
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+            return tempForm;
+        }
+
+        //调用方法
+        post('http://172.16.1.159:5000/data_analysis/_add_numbers', {username : last, password : 'yyyy'});
+
+    </script>
+
+</div>
+
+
+
+{% endblock %}

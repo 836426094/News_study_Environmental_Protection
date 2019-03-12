@@ -1,0 +1,9 @@
+scrapy
+flask
+whoosh
+jieba
+peewee
+PyMySQL
+bs4
+lxml
+git+https://github.com/jaybaird/python-bloomfilter/

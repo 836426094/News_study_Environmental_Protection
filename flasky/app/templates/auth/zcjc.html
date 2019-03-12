@@ -1,0 +1,46 @@
+{% extends "news_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}   <!--渲染表单-->
+
+
+{% block title %}手机邮箱检测{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    <!--渲染Flask消息  提示session中的名字和新输入的名字不一样-->
+    {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+      </div>
+    {% endfor %}
+    <!--渲染Flask消息结束 -->
+
+
+
+    {% block page_content %}
+    <div class="page-header">
+
+          <h1>检测手机/邮箱在哪些网站中注册过</h1>
+    </div>
+
+    <div class="col-md-4">
+        {{ wtf.quick_form(form) }}
+        <!--<br>-->
+        <!--<p>忘记密码? <a href="{{ url_for('auth.password_reset_request') }}">点击重设密码</a>。</p>-->
+        <!--<p>新建用户?<a href="{{ url_for('auth.register') }}">点击注册</a></p>-->
+
+    </div>
+
+
+
+
+    {% endblock %}
+</div>
+{% endblock %}
+
+
+
+
+

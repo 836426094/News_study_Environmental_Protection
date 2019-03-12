@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}   <!--渲染表单-->
+
+{% block title %}nmaeform{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+    <!--渲染Flask消息  提示session中的名字和新输入的名字不一样-->
+    {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+      </div>
+    {% endfor %}
+    <!--渲染Flask消息结束 -->
+
+
+    {% block page_content %}
+    <div class="page-header">
+        <h1>测试WTforms</h1>
+        <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+        {% if not known %}
+        <p>Pleased to meet you!</p>
+        {% else %}
+        <p>Happy to see you again!</p>
+        {% endif %}
+    </div>
+
+    <!--<form method="POST">-->
+          <!--{{form.hidden_tag()}}-->
+          <!--{{ form.name.label }} {{ form.name() }}-->
+          <!--{{ form.submit() }}-->
+        <!--</form>-->
+    <!--渲染form表单-->
+    {{ wtf.quick_form(form) }}
+    <!--渲染form表单结束-->
+
+    {% endblock %}
+</div>
+{% endblock %}
