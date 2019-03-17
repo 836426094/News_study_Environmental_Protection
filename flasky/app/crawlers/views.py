@@ -384,7 +384,10 @@ def news_export():
                 else:
                     if updatesql.strip()=='where':
                         updatesql=''
-                    sql='select a.ID,a.url,a.title,a.datatate,a.content,a.hege,a.wuran,a.fengxian,a.shengtai,a.ziyuan,a.xuanjiao,a.guanli,a.shuihj_2,a.kongqi_2,a.shenghj_2,a.turang_2,a.feiwu_2,a.shengwu_2,a.other_2,a.score from news_result a '+updatesql+' ORDER BY a.ID LIMIT %d, %d'%(startpage,limitpage)
+                    sql='select a.ID,a.url,a.title,a.datatate,a.content,a.hege,a.wuran,a.fengxian,' \
+                        'a.shengtai,a.ziyuan,a.xuanjiao,a.guanli,a.shuihj_2,a.kongqi_2,a.shenghj_2,' \
+                        'a.turang_2,a.feiwu_2,a.shengwu_2,a.other_2,a.score ' \
+                        'from news_result a '+updatesql+' ORDER BY a.ID'
 
                     print '--4 else sql     --',sql
 
@@ -482,7 +485,7 @@ def news_export():
 
                 f.write(html)
                 f.close()
-            except TypeError,e:
+            except Exception,e:
 
                 print '----------',TypeError,e
                 continue
