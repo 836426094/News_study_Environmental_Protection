@@ -156,7 +156,7 @@ rsa==3.4.2
 scapy==2.3.3
 scikit-learn==0.18.1
 scipy==0.19.0
-Scrapy==1.0.5
+Scrapy==1.8.2
 scrapy-redis==0.6.8
 scrapydo==0.1.0
 selenium==3.4.1
