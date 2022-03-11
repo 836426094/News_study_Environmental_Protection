@@ -110,7 +110,7 @@ pdfminer==20140328
 peewee==2.9.2
 pefile==2016.3.28
 pickleshare==0.7.4
-Pillow==3.1.1
+Pillow==9.0.1
 plotly==2.0.0
 prompt-toolkit==1.0.9
 psutil==5.0.1
