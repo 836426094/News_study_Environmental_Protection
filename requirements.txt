@@ -169,7 +169,7 @@ sklearn==0.0
 soaplib==1.0.0
 SOAPpy==0.12.22
 SQLAlchemy==1.1.9
-suds==0.4
+suds==1.0.0
 sympy==1.0
 tabula==1.0.5
 testpath==0.3
